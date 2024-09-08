@@ -26,11 +26,10 @@ lint:
 	find . -name '*.go' -exec golines -w {} -m 120 \;
 	golangci-lint run ./...
 
-run:
-	go run ./cmd
+run_server:
+	go run ./cmd/server
 
 up_database:
-	docker container rm -f $(sudo docker ps -a -q)
 	docker compose -f docker-compose.db.yml up -d
 
 generate_keys:

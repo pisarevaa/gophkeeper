@@ -32,7 +32,10 @@ func main() {
 	logger := logger.NewLogger()
 	config := config.NewConfig(logger)
 	validator := utils.NewValidator()
-	repo := storage.NewDB(config.Database.Dsn, logger)
+	repo, err := storage.NewDB(config.Database.Dsn, logger)
+	if err != nil {
+		panic(err)
+	}
 	defer repo.CloseConnection()
 
 	handlers := handler.NewHandler(
@@ -48,7 +51,7 @@ func main() {
 		WriteTimeout: writeTimeout * time.Second,
 	}
 	go func() {
-		if err := srv.ListenAndServe(); err != nil && err != http.ErrServerClosed {
+		if errServer := srv.ListenAndServe(); errServer != nil && errServer != http.ErrServerClosed {
 			logger.Info("Could not listen on ", config.Host)
 		}
 	}()
@@ -56,7 +59,7 @@ func main() {
 	<-ctxStop.Done()
 	shutdownCtx, timeout := context.WithTimeout(ctxStop, shutdownTimeout*time.Second)
 	defer timeout()
-	err := srv.Shutdown(shutdownCtx)
+	err = srv.Shutdown(shutdownCtx)
 	if err != nil {
 		logger.Error(err)
 	}

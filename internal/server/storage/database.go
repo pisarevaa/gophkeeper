@@ -4,6 +4,10 @@ import (
 	"context"
 	"time"
 
+	"github.com/golang-migrate/migrate/v4"
+	_ "github.com/golang-migrate/migrate/v4/database/postgres" // postgres driver
+	_ "github.com/golang-migrate/migrate/v4/source/file"
+
 	"github.com/jackc/pgx/v5/pgxpool"
 	"go.uber.org/zap"
 )
@@ -12,15 +16,35 @@ type DB struct {
 	*pgxpool.Pool
 }
 
-func NewDB(dsn string, logger *zap.SugaredLogger) *DB {
+const MigrationPath = "file://migrations"
+
+// Создание подключения к БД.
+func NewDB(dsn string, logger *zap.SugaredLogger) (*DB, error) {
 	dbpool, err := pgxpool.New(context.Background(), dsn)
 	if err != nil {
-		logger.Error("Unable to create connection db pool: %v", err)
-		return nil
+		return nil, err
 	}
 	logger.Info("Connected to db pool")
+	err = MigrateUp(dsn, logger)
+	if err != nil {
+		return nil, err
+	}
 	db := &DB{dbpool}
-	return db
+	return db, nil
+}
+
+// Миграция таблиц БД.
+func MigrateUp(dsn string, logger *zap.SugaredLogger) error {
+	m, err := migrate.New(MigrationPath, dsn)
+	if err != nil {
+		return err
+	}
+	err = m.Up()
+	if err != nil {
+		return err
+	}
+	logger.Info("Migrated tables successfully")
+	return nil
 }
 
 // Сохранение метрики.

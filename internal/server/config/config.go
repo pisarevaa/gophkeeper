@@ -6,8 +6,7 @@ import (
 )
 
 type Database struct {
-	Dsn    string
-	Schema string
+	Dsn string
 }
 
 type Config struct {
@@ -25,11 +24,7 @@ func (s *Config) SetHost() {
 func (s *Config) SetDatabase() {
 	s.Database.Dsn = viper.GetString("DB_DSN")
 	if s.Database.Dsn == "" {
-		s.Database.Dsn = "postgresql://gophkeeper:CC7B02B06C4C1CF81FAE7D8C46C429EC@localhost:5432/gophkeeper"
-	}
-	s.Database.Schema = viper.GetString("DB_SCHEMA")
-	if s.Database.Schema == "" {
-		s.Database.Schema = "gophkeeper"
+		s.Database.Dsn = "postgresql://gophkeeper:CC7B02B06C4C1CF81FAE7D8C46C429EC@localhost:5432/gophkeeper?sslmode=disable"
 	}
 }
 
