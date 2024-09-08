@@ -1,0 +1,3 @@
+DROP TABLE IF EXISTS data_text;
+DROP TABLE IF EXISTS data_file;
+DROP TABLE IF EXISTS user;

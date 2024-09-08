@@ -25,3 +25,11 @@ vendor/
 # Own notes to project
 .env
 /report
+
+# Security keys
+gophkeeper_private.key
+gophkeeper_public.key
+gophkeeper.crt
+
+# Users data
+data/*
