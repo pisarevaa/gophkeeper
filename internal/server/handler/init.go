@@ -4,9 +4,8 @@ import (
 	"go.uber.org/zap"
 
 	"github.com/go-playground/validator/v10"
-	"github.com/pisarevaa/fastlog/internal/config"
-	"github.com/pisarevaa/fastlog/internal/producer"
-	"github.com/pisarevaa/fastlog/internal/storage"
+	"github.com/pisarevaa/gophkeeper/internal/server/config"
+	"github.com/pisarevaa/gophkeeper/internal/server/storage"
 )
 
 type Handler struct {
@@ -14,7 +13,6 @@ type Handler struct {
 	Logger    *zap.SugaredLogger
 	Storage   storage.Storage
 	Validator *validator.Validate
-	Producer  producer.Producer
 }
 
 type Option func(*Handler)
@@ -40,12 +38,6 @@ func WithStorage(storage storage.Storage) Option {
 func WithValidator(validator *validator.Validate) Option {
 	return func(s *Handler) {
 		s.Validator = validator
-	}
-}
-
-func WithProducer(producer producer.Producer) Option {
-	return func(s *Handler) {
-		s.Producer = producer
 	}
 }
 

@@ -5,7 +5,7 @@ import (
 	"github.com/go-chi/chi/v5/middleware"
 	"github.com/go-chi/cors"
 
-	"github.com/pisarevaa/fastlog/internal/handler"
+	"github.com/pisarevaa/gophkeeper/internal/server/handler"
 )
 
 const MaxAge = 300

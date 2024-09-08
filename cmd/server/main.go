@@ -7,13 +7,12 @@ import (
 	"syscall"
 	"time"
 
-	"github.com/pisarevaa/fastlog/internal/config"
-	"github.com/pisarevaa/fastlog/internal/handler"
-	"github.com/pisarevaa/fastlog/internal/logger"
-	"github.com/pisarevaa/fastlog/internal/producer"
-	"github.com/pisarevaa/fastlog/internal/router"
-	"github.com/pisarevaa/fastlog/internal/storage"
-	"github.com/pisarevaa/fastlog/internal/utils"
+	"github.com/pisarevaa/gophkeeper/internal/server/config"
+	"github.com/pisarevaa/gophkeeper/internal/server/handler"
+	"github.com/pisarevaa/gophkeeper/internal/server/logger"
+	"github.com/pisarevaa/gophkeeper/internal/server/router"
+	"github.com/pisarevaa/gophkeeper/internal/server/storage"
+	"github.com/pisarevaa/gophkeeper/internal/server/utils"
 )
 
 const readTimeout = 5
@@ -35,15 +34,12 @@ func main() {
 	validator := utils.NewValidator()
 	repo := storage.NewDB(config.Database.Dsn, logger)
 	defer repo.CloseConnection()
-	producer := producer.NewProducer(config.Kafka.Server, logger)
-	defer producer.CloseConnection()
 
 	handlers := handler.NewHandler(
 		handler.WithConfig(config),
 		handler.WithLogger(logger),
 		handler.WithStorage(repo),
 		handler.WithValidator(validator),
-		handler.WithProducer(producer),
 	)
 	srv := &http.Server{
 		Addr:         config.Host,

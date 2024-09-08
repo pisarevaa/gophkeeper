@@ -4,7 +4,7 @@ import (
 	"encoding/json"
 	"net/http"
 
-	"github.com/pisarevaa/fastlog/internal/model"
+	"github.com/pisarevaa/gophkeeper/internal/server/model"
 )
 
 type QueryMetrics struct {

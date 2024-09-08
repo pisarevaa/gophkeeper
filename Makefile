@@ -29,6 +29,10 @@ lint:
 run:
 	go run ./cmd
 
+up_database:
+	docker container rm -f $(sudo docker ps -a -q)
+	docker compose -f docker-compose.db.yml up -d
+
 coverage_report:
 	go test -coverpkg=./... -count=1 -coverprofile=.coverage.out ./...
 	go tool cover -html .coverage.out -o .coverage.html
