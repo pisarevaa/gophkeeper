@@ -15,7 +15,7 @@ mock_generate:
 	mockgen -source=internal/storage/types.go -destination=internal/mocks/storage.go -package=mock Storage Transaction
 
 swag_generate:
-	swag init --dir cmd/gophermart,internal
+	swag init --dir cmd/server,internal
 
 swag_format:
 	swag fmt

@@ -17,7 +17,7 @@ type Config struct {
 func (s *Config) SetHost() {
 	s.Host = viper.GetString("HOST")
 	if s.Host == "" {
-		s.Host = "localhost:5000"
+		s.Host = "http://localhost:8080/"
 	}
 }
 

@@ -40,7 +40,7 @@ func MigrateUp(dsn string, logger *zap.SugaredLogger) error {
 		return err
 	}
 	err = m.Up()
-	if err != nil {
+	if err != nil && err.Error() != "no change" {
 		return err
 	}
 	logger.Info("Migrated tables successfully")
