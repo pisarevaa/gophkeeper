@@ -1,15 +1,18 @@
 package handler
 
 import (
+	"encoding/json"
+	"net/http"
+
 	"github.com/go-playground/validator/v10"
 	"github.com/pisarevaa/gophkeeper/internal/server/config"
-	"github.com/pisarevaa/gophkeeper/internal/server/storage"
+	"github.com/pisarevaa/gophkeeper/internal/server/service/user"
 )
 
 type Handler struct {
-	Config    config.Config
-	Storage   storage.Storage
-	Validator *validator.Validate
+	Config      config.Config
+	Validator   *validator.Validate
+	UserService user.Service
 }
 
 type Option func(*Handler)
@@ -20,15 +23,15 @@ func WithConfig(config config.Config) Option {
 	}
 }
 
-func WithStorage(storage storage.Storage) Option {
-	return func(s *Handler) {
-		s.Storage = storage
-	}
-}
-
 func WithValidator(validator *validator.Validate) Option {
 	return func(s *Handler) {
 		s.Validator = validator
+	}
+}
+
+func WithUserService(userService user.Service) Option {
+	return func(s *Handler) {
+		s.UserService = userService
 	}
 }
 
@@ -39,4 +42,13 @@ func NewHandler(options ...Option) *Handler {
 		option(h)
 	}
 	return h
+}
+
+func (h *Handler) JSON(w http.ResponseWriter, status int, model any) {
+	bytes, err := json.Marshal(model)
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
+	http.Error(w, string(bytes), status)
 }

@@ -5,13 +5,7 @@ import (
 	"net/http"
 
 	"github.com/pisarevaa/gophkeeper/internal/server/model"
-	"github.com/pisarevaa/gophkeeper/internal/server/utils"
 )
-
-type QueryMetrics struct {
-	ID    string `json:"id"`
-	MType string `json:"type"`
-}
 
 // Register user
 // RegisterUser godoc
@@ -22,19 +16,24 @@ type QueryMetrics struct {
 //	@Accept		json
 //	@Produce	json
 //	@Param		request	body		model.RegisterUser	true	"Body"
-//	@Success	200		{object}	model.Success		"Response"
-//	@Failure	409		{object}	model.Error			"Email is already used"
-//	@Failure	500		{object}	model.Error			"Error"
+//	@Success	200		{object}	model.UserResponse		"Response"
+//	@Failure	409		{object}	utils.Error			"Email is already used"
+//	@Failure	500		{object}	utils.Error			"Error"
 //	@Router		/api/user/register [post]
 func (s *Handler) RegisterUser(w http.ResponseWriter, r *http.Request) {
 	var user model.RegisterUser
 	if err := json.NewDecoder(r.Body).Decode(&user); err != nil {
-		utils.ErrorResponse(w, err, http.StatusUnprocessableEntity)
+		s.JSON(w, http.StatusUnprocessableEntity, model.Error{Error: err.Error()})
 		return
 	}
 	if err := s.Validator.Struct(user); err != nil {
-		utils.ErrorResponse(w, err, http.StatusUnprocessableEntity)
+		s.JSON(w, http.StatusUnprocessableEntity, model.Error{Error: err.Error()})
 		return
 	}
-	utils.SuccessResponse(w)
+	newUser, err := s.UserService.RegisterUser(r.Context(), user)
+	if err != nil {
+		s.JSON(w, http.StatusConflict, model.Error{Error: err.Error()})
+		return
+	}
+	s.JSON(w, http.StatusOK, newUser)
 }

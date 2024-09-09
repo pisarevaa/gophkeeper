@@ -11,14 +11,22 @@ type Database struct {
 }
 
 type Config struct {
-	Host     string
-	Database Database
+	Host      string
+	SecretKey string
+	Database  Database
 }
 
 func (s *Config) SetHost() {
 	s.Host = viper.GetString("HOST")
 	if s.Host == "" {
-		s.Host = "http://localhost:8080/"
+		s.Host = "localhost:8080"
+	}
+}
+
+func (s *Config) SetSecretKey() {
+	s.SecretKey = viper.GetString("SECRET_KEY")
+	if s.SecretKey == "" {
+		s.SecretKey = "7fd315fd5f381bb9035d003dbd904102"
 	}
 }
 
@@ -40,6 +48,7 @@ func NewConfig() Config {
 		viper.AutomaticEnv()
 	}
 	config.SetHost()
+	config.SetSecretKey()
 	config.SetDatabase()
 	return config
 }
