@@ -12,7 +12,7 @@ integration_test:
 test: unit_test integration_test
 
 mock_generate:
-	mockgen -source=internal/storage/types.go -destination=internal/mocks/storage.go -package=mock Storage Transaction
+	mockgen -source=internal/server/storage/types.go -destination=internal/server/mocks/storage.go -package=mock Storage
 
 swag_generate:
 	swag init --dir cmd/server,internal
