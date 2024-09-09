@@ -1,8 +1,6 @@
 package handler
 
 import (
-	"go.uber.org/zap"
-
 	"github.com/go-playground/validator/v10"
 	"github.com/pisarevaa/gophkeeper/internal/server/config"
 	"github.com/pisarevaa/gophkeeper/internal/server/storage"
@@ -10,7 +8,6 @@ import (
 
 type Handler struct {
 	Config    config.Config
-	Logger    *zap.SugaredLogger
 	Storage   storage.Storage
 	Validator *validator.Validate
 }
@@ -20,12 +17,6 @@ type Option func(*Handler)
 func WithConfig(config config.Config) Option {
 	return func(s *Handler) {
 		s.Config = config
-	}
-}
-
-func WithLogger(logger *zap.SugaredLogger) Option {
-	return func(s *Handler) {
-		s.Logger = logger
 	}
 }
 

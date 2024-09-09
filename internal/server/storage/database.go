@@ -8,8 +8,9 @@ import (
 	_ "github.com/golang-migrate/migrate/v4/database/postgres" // postgres driver
 	_ "github.com/golang-migrate/migrate/v4/source/file"
 
+	"log/slog"
+
 	"github.com/jackc/pgx/v5/pgxpool"
-	"go.uber.org/zap"
 )
 
 type DB struct {
@@ -19,13 +20,13 @@ type DB struct {
 const MigrationPath = "file://migrations"
 
 // Создание подключения к БД.
-func NewDB(dsn string, logger *zap.SugaredLogger) (*DB, error) {
+func NewDB(dsn string) (*DB, error) {
 	dbpool, err := pgxpool.New(context.Background(), dsn)
 	if err != nil {
 		return nil, err
 	}
-	logger.Info("Connected to db pool")
-	err = MigrateUp(dsn, logger)
+	slog.Info("Connected to db pool")
+	err = MigrateUp(dsn)
 	if err != nil {
 		return nil, err
 	}
@@ -34,7 +35,7 @@ func NewDB(dsn string, logger *zap.SugaredLogger) (*DB, error) {
 }
 
 // Миграция таблиц БД.
-func MigrateUp(dsn string, logger *zap.SugaredLogger) error {
+func MigrateUp(dsn string) error {
 	m, err := migrate.New(MigrationPath, dsn)
 	if err != nil {
 		return err
@@ -43,7 +44,7 @@ func MigrateUp(dsn string, logger *zap.SugaredLogger) error {
 	if err != nil && err.Error() != "no change" {
 		return err
 	}
-	logger.Info("Migrated tables successfully")
+	slog.Info("Migrated tables successfully")
 	return nil
 }
 

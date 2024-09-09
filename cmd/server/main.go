@@ -2,6 +2,7 @@ package main
 
 import (
 	"context"
+	"log/slog"
 	"net/http"
 	"os/signal"
 	"syscall"
@@ -19,9 +20,9 @@ const readTimeout = 5
 const writeTimeout = 10
 const shutdownTimeout = 10
 
-// @title		Swagger SDK Logger Service API
+// @title		Swagger Gophkeeper API
 // @version	1.0
-// @host		localhost:7000
+// @host		localhost:8080
 
 func main() {
 	ctxCancel, cancel := context.WithCancel(context.Background())
@@ -29,10 +30,10 @@ func main() {
 	ctxStop, stop := signal.NotifyContext(ctxCancel, syscall.SIGINT, syscall.SIGTERM, syscall.SIGQUIT)
 	defer stop()
 
-	logger := logger.NewLogger()
-	config := config.NewConfig(logger)
+	logger.NewLogger()
+	config := config.NewConfig()
 	validator := utils.NewValidator()
-	repo, err := storage.NewDB(config.Database.Dsn, logger)
+	repo, err := storage.NewDB(config.Database.Dsn)
 	if err != nil {
 		panic(err)
 	}
@@ -40,7 +41,6 @@ func main() {
 
 	handlers := handler.NewHandler(
 		handler.WithConfig(config),
-		handler.WithLogger(logger),
 		handler.WithStorage(repo),
 		handler.WithValidator(validator),
 	)
@@ -52,16 +52,16 @@ func main() {
 	}
 	go func() {
 		if errServer := srv.ListenAndServe(); errServer != nil && errServer != http.ErrServerClosed {
-			logger.Info("Could not listen on ", config.Host)
+			slog.Info("Could not listen on " + config.Host)
 		}
 	}()
-	logger.Info("Server is running on ", config.Host)
+	slog.Info("Server is running on " + config.Host)
 	<-ctxStop.Done()
 	shutdownCtx, timeout := context.WithTimeout(ctxStop, shutdownTimeout*time.Second)
 	defer timeout()
 	err = srv.Shutdown(shutdownCtx)
 	if err != nil {
-		logger.Error(err)
+		slog.Error(err.Error())
 	}
-	logger.Info("Server is gracefully shutdown")
+	slog.Info("Server is gracefully shutdown")
 }

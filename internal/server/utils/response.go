@@ -2,6 +2,7 @@ package utils
 
 import (
 	"encoding/json"
+	"log/slog"
 	"net/http"
 
 	"github.com/pisarevaa/gophkeeper/internal/server/model"
@@ -27,5 +28,6 @@ func ErrorResponse(w http.ResponseWriter, err error, statusCode int) {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
 	}
+	slog.Error(string(errorResponse))
 	http.Error(w, string(errorResponse), statusCode)
 }

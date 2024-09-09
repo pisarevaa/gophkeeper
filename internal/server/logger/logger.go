@@ -1,12 +1,12 @@
 package logger
 
 import (
-	"go.uber.org/zap"
+	"log/slog"
+	"os"
 )
 
 // Инициализация логера.
-func NewLogger() *zap.SugaredLogger {
-	logger := zap.NewExample().Sugar()
-	defer logger.Sync() //nolint:errcheck // ignore check
-	return logger
+func NewLogger() {
+	logger := slog.New(slog.NewJSONHandler(os.Stdout, nil))
+	slog.SetDefault(logger)
 }

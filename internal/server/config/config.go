@@ -1,8 +1,9 @@
 package config
 
 import (
+	"log/slog"
+
 	"github.com/spf13/viper"
-	"go.uber.org/zap"
 )
 
 type Database struct {
@@ -29,13 +30,13 @@ func (s *Config) SetDatabase() {
 }
 
 // Инициализация переменных окружения.
-func NewConfig(logger *zap.SugaredLogger) Config {
+func NewConfig() Config {
 	var config Config
 	viper.SetConfigType("env")
 	viper.SetConfigName(".env")
 	viper.AddConfigPath(".")
 	if err := viper.ReadInConfig(); err != nil {
-		logger.Error(err)
+		slog.Error(err.Error())
 		viper.AutomaticEnv()
 	}
 	config.SetHost()

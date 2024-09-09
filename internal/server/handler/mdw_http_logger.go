@@ -1,6 +1,7 @@
 package handler
 
 import (
+	"log/slog"
 	"net/http"
 	"time"
 )
@@ -41,7 +42,8 @@ func (s *Handler) HTTPLoggingMiddleware(h http.Handler) http.Handler {
 		}
 		h.ServeHTTP(&lw, r)
 		duration := time.Since(start)
-		s.Logger.Infoln(
+		slog.Info(
+			"request",
 			"uri", uri,
 			"method", method,
 			"status", responseData.status,
