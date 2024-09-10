@@ -4,6 +4,7 @@ import (
 	"encoding/json"
 	"log/slog"
 	"net/http"
+	"time"
 
 	"github.com/go-playground/validator/v10"
 	"github.com/pisarevaa/gophkeeper/internal/server/config"
@@ -45,7 +46,7 @@ func NewHandler(options ...Option) *Handler {
 	return h
 }
 
-// Кодирование ответа в JSON
+// Кодирование ответа в JSON.
 func (h *Handler) JSON(w http.ResponseWriter, status int, model any) {
 	bytes, err := json.Marshal(model)
 	if err != nil {
@@ -57,4 +58,16 @@ func (h *Handler) JSON(w http.ResponseWriter, status int, model any) {
 	}
 	w.Header().Set("Content-Type", "application/json")
 	http.Error(w, string(bytes), status)
+}
+
+// Установка куки авторизации с токеном.
+func (h *Handler) SetTokenCookie(w http.ResponseWriter, token string, tokenExpSec int64) {
+	cookie := http.Cookie{}
+	cookie.Name = "token"
+	cookie.Value = token
+	cookie.Expires = time.Now().Add(time.Duration(tokenExpSec))
+	cookie.Secure = false
+	cookie.HttpOnly = true
+	cookie.Path = "/"
+	http.SetCookie(w, &cookie)
 }

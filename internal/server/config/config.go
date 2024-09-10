@@ -10,10 +10,15 @@ type Database struct {
 	Dsn string
 }
 
+type Security struct {
+	SecretKey   string
+	TokenExpSec int64
+}
+
 type Config struct {
-	Host      string
-	SecretKey string
-	Database  Database
+	Host     string
+	Security Security
+	Database Database
 }
 
 func (s *Config) SetHost() {
@@ -23,10 +28,14 @@ func (s *Config) SetHost() {
 	}
 }
 
-func (s *Config) SetSecretKey() {
-	s.SecretKey = viper.GetString("SECRET_KEY")
-	if s.SecretKey == "" {
-		s.SecretKey = "7fd315fd5f381bb9035d003dbd904102"
+func (s *Config) SetSecurity() {
+	s.Security.SecretKey = viper.GetString("SECURITY_SECRET_KEY")
+	if s.Security.SecretKey == "" {
+		s.Security.SecretKey = "7fd315fd5f381bb9035d003dbd904102"
+	}
+	s.Security.TokenExpSec = viper.GetInt64("SECURITY_TOKEN_EXP_SEC")
+	if s.Security.TokenExpSec == 0 {
+		s.Security.TokenExpSec = 7200
 	}
 }
 
@@ -48,7 +57,7 @@ func NewConfig() Config {
 		viper.AutomaticEnv()
 	}
 	config.SetHost()
-	config.SetSecretKey()
+	config.SetSecurity()
 	config.SetDatabase()
 	return config
 }

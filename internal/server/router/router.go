@@ -34,5 +34,6 @@ func NewRouter(handlers *handler.Handler) chi.Router {
 	// }
 	// Маршруты
 	r.Post("/api/register", handlers.RegisterUser)
+	r.Post("/api/login", handlers.Login)
 	return r
 }
