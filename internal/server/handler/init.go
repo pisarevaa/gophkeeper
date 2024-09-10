@@ -2,6 +2,7 @@ package handler
 
 import (
 	"encoding/json"
+	"log/slog"
 	"net/http"
 
 	"github.com/go-playground/validator/v10"
@@ -44,11 +45,16 @@ func NewHandler(options ...Option) *Handler {
 	return h
 }
 
+// Кодирование ответа в JSON
 func (h *Handler) JSON(w http.ResponseWriter, status int, model any) {
 	bytes, err := json.Marshal(model)
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
 	}
+	if status != http.StatusOK {
+		slog.Error(string(bytes))
+	}
+	w.Header().Set("Content-Type", "application/json")
 	http.Error(w, string(bytes), status)
 }

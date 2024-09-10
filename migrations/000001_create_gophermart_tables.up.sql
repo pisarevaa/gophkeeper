@@ -1,5 +1,5 @@
 CREATE TABLE IF NOT EXISTS users (
-	"id" 		    INTEGER PRIMARY KEY,
+	"id" 		    SERIAL PRIMARY KEY,
     "email" 		VARCHAR(250) NOT NULL,
 	"password" 		VARCHAR(250) NOT NULL,
 	"created_at" 	TIMESTAMPTZ NOT NULL DEFAULT NOW()

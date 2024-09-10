@@ -42,7 +42,7 @@ const docTemplate = `{
                     "200": {
                         "description": "Response",
                         "schema": {
-                            "$ref": "#/definitions/model.Success"
+                            "$ref": "#/definitions/model.UserResponse"
                         }
                     },
                     "409": {
@@ -87,11 +87,17 @@ const docTemplate = `{
                 }
             }
         },
-        "model.Success": {
+        "model.UserResponse": {
             "type": "object",
             "properties": {
-                "success": {
-                    "type": "boolean"
+                "createdAt": {
+                    "type": "string"
+                },
+                "email": {
+                    "type": "string"
+                },
+                "id": {
+                    "type": "integer"
                 }
             }
         }
@@ -101,10 +107,10 @@ const docTemplate = `{
 // SwaggerInfo holds exported Swagger Info so clients can modify it
 var SwaggerInfo = &swag.Spec{
 	Version:          "1.0",
-	Host:             "localhost:7000",
+	Host:             "localhost:8080",
 	BasePath:         "",
 	Schemes:          []string{},
-	Title:            "Swagger SDK Logger Service API",
+	Title:            "Swagger Gophkeeper API",
 	Description:      "",
 	InfoInstanceName: "swagger",
 	SwaggerTemplate:  docTemplate,

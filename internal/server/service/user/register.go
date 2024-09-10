@@ -9,7 +9,7 @@ import (
 
 func (s *UserService) RegisterUser(ctx context.Context, user model.RegisterUser) (model.User, error) {
 	_, err := s.Storage.GetUserByEmail(ctx, user.Email)
-	if err != nil {
+	if err == nil {
 		return model.User{}, utils.ErrEmailAlreadyUsed
 	}
 	passwordHash, err := utils.GetPasswordHash(user.Password, s.Config.SecretKey)

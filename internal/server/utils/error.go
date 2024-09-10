@@ -4,4 +4,4 @@ import (
 	"errors"
 )
 
-var ErrEmailAlreadyUsed = errors.New("Email уже использован")
+var ErrEmailAlreadyUsed = errors.New("email уже использован")

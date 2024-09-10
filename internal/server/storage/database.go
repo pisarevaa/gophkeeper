@@ -71,7 +71,7 @@ func (dbpool *DB) GetUserByID(ctx context.Context, userID int64) (model.User, er
 
 func (dbpool *DB) RegisterUser(ctx context.Context, email string, passwordHash string) (model.User, error) {
 	var user model.User
-	err := dbpool.QueryRow(ctx, "INSERT INTO users (email, password) VALUES ($1, $2) RETURNING (id, email, password, created_at)", email, passwordHash).
+	err := dbpool.QueryRow(ctx, "INSERT INTO users (email, password) VALUES ($1, $2) RETURNING id, email, password, created_at", email, passwordHash).
 		Scan(&user.ID, &user.Email, &user.Password, &user.CreatedAt)
 	if err != nil {
 		return user, err

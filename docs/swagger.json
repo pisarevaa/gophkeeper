@@ -1,11 +1,11 @@
 {
     "swagger": "2.0",
     "info": {
-        "title": "Swagger SDK Logger Service API",
+        "title": "Swagger Gophkeeper API",
         "contact": {},
         "version": "1.0"
     },
-    "host": "localhost:7000",
+    "host": "localhost:8080",
     "paths": {
         "/api/user/register": {
             "post": {
@@ -34,7 +34,7 @@
                     "200": {
                         "description": "Response",
                         "schema": {
-                            "$ref": "#/definitions/model.Success"
+                            "$ref": "#/definitions/model.UserResponse"
                         }
                     },
                     "409": {
@@ -79,11 +79,17 @@
                 }
             }
         },
-        "model.Success": {
+        "model.UserResponse": {
             "type": "object",
             "properties": {
-                "success": {
-                    "type": "boolean"
+                "createdAt": {
+                    "type": "string"
+                },
+                "email": {
+                    "type": "string"
+                },
+                "id": {
+                    "type": "integer"
                 }
             }
         }

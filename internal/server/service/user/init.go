@@ -5,7 +5,7 @@ import (
 	"github.com/pisarevaa/gophkeeper/internal/server/storage"
 )
 
-type UserService struct {
+type UserService struct { //nolint:revive // it's ok
 	Config  config.Config
 	Storage storage.Storage
 }

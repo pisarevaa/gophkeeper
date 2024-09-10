@@ -5,6 +5,7 @@ import (
 	"net/http"
 
 	"github.com/pisarevaa/gophkeeper/internal/server/model"
+	"github.com/pisarevaa/gophkeeper/internal/server/utils"
 )
 
 // Register user
@@ -16,9 +17,9 @@ import (
 //	@Accept		json
 //	@Produce	json
 //	@Param		request	body		model.RegisterUser	true	"Body"
-//	@Success	200		{object}	model.UserResponse		"Response"
-//	@Failure	409		{object}	utils.Error			"Email is already used"
-//	@Failure	500		{object}	utils.Error			"Error"
+//	@Success	200		{object}	model.UserResponse	"Response"
+//	@Failure	409		{object}	model.Error			"Email is already used"
+//	@Failure	500		{object}	model.Error			"Error"
 //	@Router		/api/user/register [post]
 func (s *Handler) RegisterUser(w http.ResponseWriter, r *http.Request) {
 	var user model.RegisterUser
@@ -35,5 +36,9 @@ func (s *Handler) RegisterUser(w http.ResponseWriter, r *http.Request) {
 		s.JSON(w, http.StatusConflict, model.Error{Error: err.Error()})
 		return
 	}
-	s.JSON(w, http.StatusOK, newUser)
+	s.JSON(w, http.StatusOK, model.UserResponse{
+		ID:        newUser.ID,
+		Email:     newUser.Email,
+		CreatedAt: utils.Datetime(newUser.CreatedAt),
+	})
 }

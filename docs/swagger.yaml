@@ -16,15 +16,19 @@ definitions:
     - email
     - password
     type: object
-  model.Success:
+  model.UserResponse:
     properties:
-      success:
-        type: boolean
+      createdAt:
+        type: string
+      email:
+        type: string
+      id:
+        type: integer
     type: object
-host: localhost:7000
+host: localhost:8080
 info:
   contact: {}
-  title: Swagger SDK Logger Service API
+  title: Swagger Gophkeeper API
   version: "1.0"
 paths:
   /api/user/register:
@@ -44,7 +48,7 @@ paths:
         "200":
           description: Response
           schema:
-            $ref: '#/definitions/model.Success'
+            $ref: '#/definitions/model.UserResponse'
         "409":
           description: Email is already used
           schema:

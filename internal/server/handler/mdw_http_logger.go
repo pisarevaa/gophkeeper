@@ -27,7 +27,7 @@ func (r *loggingResponseWriter) WriteHeader(statusCode int) {
 }
 
 // Мидлвар по логированию HTTP запросов.
-func (s *Handler) HTTPLoggingMiddleware(h http.Handler) http.Handler {
+func (s *Handler) HTTPLoggingMiddleware(h http.Handler) http.Handler { //nolint:stylecheck // it's ok
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		start := time.Now()
 		uri := r.RequestURI
