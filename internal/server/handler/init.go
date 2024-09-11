@@ -8,13 +8,13 @@ import (
 
 	"github.com/go-playground/validator/v10"
 	"github.com/pisarevaa/gophkeeper/internal/server/config"
-	"github.com/pisarevaa/gophkeeper/internal/server/service/user"
+	user "github.com/pisarevaa/gophkeeper/internal/server/service/auth"
 )
 
 type Handler struct {
 	Config      config.Config
 	Validator   *validator.Validate
-	UserService user.Service
+	AuthService user.Service
 }
 
 type Option func(*Handler)
@@ -31,9 +31,9 @@ func WithValidator(validator *validator.Validate) Option {
 	}
 }
 
-func WithUserService(userService user.Service) Option {
+func WithAuthService(authService user.Service) Option {
 	return func(s *Handler) {
-		s.UserService = userService
+		s.AuthService = authService
 	}
 }
 

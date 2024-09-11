@@ -13,7 +13,7 @@ test: unit_test integration_test
 
 mock_generate:
 	mockgen -source=internal/server/storage/types.go -destination=internal/server/mocks/storage.go -package=mock Storage
-	mockgen -source=internal/server/service/user/types.go -destination=internal/server/mocks/user.go -package=mock UserService
+	mockgen -source=internal/server/service/auth/types.go -destination=internal/server/mocks/auth.go -package=mock AuthService
 
 swag_generate:
 	swag init --dir cmd/server,internal

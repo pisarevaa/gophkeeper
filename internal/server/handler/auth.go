@@ -18,8 +18,9 @@ import (
 //	@Produce	json
 //	@Param		request	body		model.RegisterUser	true	"Body"
 //	@Success	200		{object}	model.UserResponse	"Response"
+//	@Failure	422		{object}	model.Error			"Unprocessable entity"
 //	@Failure	409		{object}	model.Error			"Email is already used"
-//	@Failure	500		{object}	model.Error			"Error"
+//	@Failure	500		{object}	model.Error			"nternal server error"
 //	@Router		/api/user/register [post]
 func (s *Handler) RegisterUser(w http.ResponseWriter, r *http.Request) {
 	var user model.RegisterUser
@@ -31,7 +32,7 @@ func (s *Handler) RegisterUser(w http.ResponseWriter, r *http.Request) {
 		s.JSON(w, http.StatusUnprocessableEntity, model.Error{Error: err.Error()})
 		return
 	}
-	newUser, status, err := s.UserService.RegisterUser(r.Context(), user)
+	newUser, status, err := s.AuthService.RegisterUser(r.Context(), user)
 	if err != nil {
 		s.JSON(w, status, model.Error{Error: err.Error()})
 		return
@@ -53,8 +54,10 @@ func (s *Handler) RegisterUser(w http.ResponseWriter, r *http.Request) {
 //	@Produce	json
 //	@Param		request	body		model.RegisterUser	true	"Body"
 //	@Success	200		{object}	model.TokenResponse	"Response"
-//	@Failure	409		{object}	model.Error			"Email is already used"
-//	@Failure	500		{object}	model.Error			"Error"
+//	@Failure	422		{object}	model.Error			"Unprocessable entity"
+//	@Failure	404		{object}	model.Error			"Email is not found"
+//	@Failure	401		{object}	model.Error			"Incorrect password"
+//	@Failure	500		{object}	model.Error			"nternal server error"
 //	@Router		/api/user/register [post]
 func (s *Handler) Login(w http.ResponseWriter, r *http.Request) {
 	var user model.RegisterUser
@@ -66,7 +69,7 @@ func (s *Handler) Login(w http.ResponseWriter, r *http.Request) {
 		s.JSON(w, http.StatusUnprocessableEntity, model.Error{Error: err.Error()})
 		return
 	}
-	token, status, err := s.UserService.Login(r.Context(), user)
+	token, status, err := s.AuthService.Login(r.Context(), user)
 	if err != nil {
 		s.JSON(w, status, model.Error{Error: err.Error()})
 		return

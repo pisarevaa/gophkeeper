@@ -9,7 +9,7 @@ import (
 	"github.com/pisarevaa/gophkeeper/internal/server/utils"
 )
 
-func (s *UserService) RegisterUser(ctx context.Context, user model.RegisterUser) (model.User, int, error) {
+func (s *AuthService) RegisterUser(ctx context.Context, user model.RegisterUser) (model.User, int, error) {
 	_, err := s.Storage.GetUserByEmail(ctx, user.Email)
 	if err == nil {
 		return model.User{}, http.StatusConflict, errors.New("email уже использован")
@@ -25,7 +25,7 @@ func (s *UserService) RegisterUser(ctx context.Context, user model.RegisterUser)
 	return newUser, 0, nil
 }
 
-func (s *UserService) Login(ctx context.Context, user model.RegisterUser) (string, int, error) {
+func (s *AuthService) Login(ctx context.Context, user model.RegisterUser) (string, int, error) {
 	foundUser, err := s.Storage.GetUserByEmail(ctx, user.Email)
 	if err != nil {
 		return "", http.StatusNotFound, errors.New("email не найден")
