@@ -1,11 +1,11 @@
-package user
+package auth
 
 import (
 	"github.com/pisarevaa/gophkeeper/internal/server/config"
 	"github.com/pisarevaa/gophkeeper/internal/server/storage"
 )
 
-type AuthService struct {
+type AuthService struct { //nolint:revive // it's okey
 	Config  config.Config
 	Storage storage.Storage
 }

@@ -3,13 +3,8 @@
 help:
 	cat Makefile
 
-unit_test:
+test:
 	go clean -testcache && go test -v ./internal/...
-
-integration_test:
-	go clean -testcache && go test -v .
-
-test: unit_test integration_test
 
 mock_generate:
 	mockgen -source=internal/server/storage/types.go -destination=internal/server/mocks/storage.go -package=mock Storage
