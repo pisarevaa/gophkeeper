@@ -13,15 +13,15 @@ import (
 //
 //	@Summary	Regiser user
 //	@Schemes
-//	@Tags		Log
+//	@Tags		Auth
 //	@Accept		json
 //	@Produce	json
 //	@Param		request	body		model.RegisterUser	true	"Body"
 //	@Success	200		{object}	model.UserResponse	"Response"
 //	@Failure	422		{object}	model.Error			"Unprocessable entity"
 //	@Failure	409		{object}	model.Error			"Email is already used"
-//	@Failure	500		{object}	model.Error			"nternal server error"
-//	@Router		/api/user/register [post]
+//	@Failure	500		{object}	model.Error			"Internal server error"
+//	@Router		/auth/register [post]
 func (s *Handler) RegisterUser(w http.ResponseWriter, r *http.Request) {
 	var user model.RegisterUser
 	if err := json.NewDecoder(r.Body).Decode(&user); err != nil {
@@ -49,7 +49,7 @@ func (s *Handler) RegisterUser(w http.ResponseWriter, r *http.Request) {
 //
 //	@Summary	Login user
 //	@Schemes
-//	@Tags		Log
+//	@Tags		Auth
 //	@Accept		json
 //	@Produce	json
 //	@Param		request	body		model.RegisterUser	true	"Body"
@@ -57,8 +57,8 @@ func (s *Handler) RegisterUser(w http.ResponseWriter, r *http.Request) {
 //	@Failure	422		{object}	model.Error			"Unprocessable entity"
 //	@Failure	404		{object}	model.Error			"Email is not found"
 //	@Failure	401		{object}	model.Error			"Incorrect password"
-//	@Failure	500		{object}	model.Error			"nternal server error"
-//	@Router		/api/user/register [post]
+//	@Failure	500		{object}	model.Error			"Internal server error"
+//	@Router		/auth/login [post]
 func (s *Handler) Login(w http.ResponseWriter, r *http.Request) {
 	var user model.RegisterUser
 	if err := json.NewDecoder(r.Body).Decode(&user); err != nil {

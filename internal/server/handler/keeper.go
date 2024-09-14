@@ -9,6 +9,18 @@ import (
 	"github.com/pisarevaa/gophkeeper/internal/server/utils"
 )
 
+// Get all data
+// GetData godoc
+//
+//	@Summary	Get all data
+//	@Schemes
+//	@Tags		Data
+//	@Accept		json
+//	@Produce	json
+//	@Success	200	{object}	[]model.DataResponse	"Response"
+//	@Failure	401	{object}	model.Error				"Unauthorized request"
+//	@Failure	500	{object}	model.Error				"Internal server error"
+//	@Router		/api/data [get]
 func (s *Handler) GetData(w http.ResponseWriter, r *http.Request) {
 	userID, ok := r.Context().Value("userID").(int64)
 	if !ok {
@@ -36,6 +48,20 @@ func (s *Handler) GetData(w http.ResponseWriter, r *http.Request) {
 	utils.JSON(w, http.StatusOK, ordersResponse)
 }
 
+// Get data by ID
+// GetDataByID godoc
+//
+//	@Summary	Get data by ID
+//	@Schemes
+//	@Tags		Data
+//	@Accept		json
+//	@Produce	json
+//	@Success	200	{object}	model.DataResponse	"Response"
+//	@Failure	422	{object}	model.Error			"Unprocessable entity (query)"
+//	@Failure	404	{object}	model.Error			"Data is not found"
+//	@Failure	401	{object}	model.Error			"Unauthorized request"
+//	@Failure	500	{object}	model.Error			"Internal server error"
+//	@Router		/api/data/{dataID} [get]
 func (s *Handler) GetDataByID(w http.ResponseWriter, r *http.Request) {
 	userID, ok := r.Context().Value("userID").(int64)
 	if !ok {
@@ -61,6 +87,19 @@ func (s *Handler) GetDataByID(w http.ResponseWriter, r *http.Request) {
 	})
 }
 
+// Add text data
+// AddTextData godoc
+//
+//	@Summary	Add text data
+//	@Schemes
+//	@Tags		Data
+//	@Accept		json
+//	@Produce	json
+//	@Success	200	{object}	model.DataResponse	"Response"
+//	@Failure	422	{object}	model.Error			"Unprocessable entity (body)"
+//	@Failure	401	{object}	model.Error			"Unauthorized request"
+//	@Failure	500	{object}	model.Error			"Internal server error"
+//	@Router		/api/data/text [post]
 func (s *Handler) AddTextData(w http.ResponseWriter, r *http.Request) {
 	userID, ok := r.Context().Value("userID").(int64)
 	if !ok {
@@ -90,6 +129,19 @@ func (s *Handler) AddTextData(w http.ResponseWriter, r *http.Request) {
 	})
 }
 
+// Add binary data
+// AddTextData godoc
+//
+//	@Summary	Add text data
+//	@Schemes
+//	@Tags		Data
+//	@Accept		multipart/form-data
+//	@Produce	json
+//	@Success	200	{object}	model.DataResponse	"Response"
+//	@Failure	422	{object}	model.Error			"Unprocessable entity (body)"
+//	@Failure	401	{object}	model.Error			"Unauthorized request"
+//	@Failure	500	{object}	model.Error			"Internal server error"
+//	@Router		/api/data/binary [post]
 func (s *Handler) AddBinaryData(w http.ResponseWriter, r *http.Request) {
 	userID, ok := r.Context().Value("userID").(int64)
 	if !ok {
@@ -98,7 +150,7 @@ func (s *Handler) AddBinaryData(w http.ResponseWriter, r *http.Request) {
 	}
 	body, err := io.ReadAll(r.Body)
 	if err != nil {
-		utils.JSON(w, http.StatusInternalServerError, model.Error{Error: err.Error()})
+		utils.JSON(w, http.StatusUnprocessableEntity, model.Error{Error: err.Error()})
 		return
 	}
 	data, status, err := s.KeeperService.AddBinaryData(r.Context(), body, userID)
@@ -115,6 +167,19 @@ func (s *Handler) AddBinaryData(w http.ResponseWriter, r *http.Request) {
 	})
 }
 
+// Update text data
+// UpdateTextData godoc
+//
+//	@Summary	Update text data
+//	@Schemes
+//	@Tags		Data
+//	@Accept		json
+//	@Produce	json
+//	@Success	200	{object}	model.DataResponse	"Response"
+//	@Failure	422	{object}	model.Error			"Unprocessable entity (query or body)"
+//	@Failure	401	{object}	model.Error			"Unauthorized request"
+//	@Failure	500	{object}	model.Error			"Internal server error"
+//	@Router		/api/data/text/{dataID} [put]
 func (s *Handler) UpdateTextData(w http.ResponseWriter, r *http.Request) {
 	userID, ok := r.Context().Value("userID").(int64)
 	if !ok {
@@ -149,6 +214,19 @@ func (s *Handler) UpdateTextData(w http.ResponseWriter, r *http.Request) {
 	})
 }
 
+// Update binary data
+// UpdateBinaryData godoc
+//
+//	@Summary	Update binary data
+//	@Schemes
+//	@Tags		Data
+//	@Accept		multipart/form-data
+//	@Produce	json
+//	@Success	200	{object}	model.DataResponse	"Response"
+//	@Failure	422	{object}	model.Error			"Unprocessable entity (query or body)"
+//	@Failure	401	{object}	model.Error			"Unauthorized request"
+//	@Failure	500	{object}	model.Error			"Internal server error"
+//	@Router		/api/data/binary/{dataID} [put]
 func (s *Handler) UpdateBinaryData(w http.ResponseWriter, r *http.Request) {
 	userID, ok := r.Context().Value("userID").(int64)
 	if !ok {
@@ -179,6 +257,19 @@ func (s *Handler) UpdateBinaryData(w http.ResponseWriter, r *http.Request) {
 	})
 }
 
+// Delete data
+// DeleteData godoc
+//
+//	@Summary	Delete data
+//	@Schemes
+//	@Tags		Data
+//	@Accept		json
+//	@Produce	json
+//	@Success	200	{object}	model.DataResponse	"Response"
+//	@Failure	422	{object}	model.Error			"Unprocessable entity (query)"
+//	@Failure	401	{object}	model.Error			"Unauthorized request"
+//	@Failure	500	{object}	model.Error			"Internal server error"
+//	@Router		/api/data/{dataID} [delete]
 func (s *Handler) DeleteData(w http.ResponseWriter, r *http.Request) {
 	userID, ok := r.Context().Value("userID").(int64)
 	if !ok {
