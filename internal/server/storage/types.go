@@ -13,7 +13,7 @@ type AuthStorage interface {
 }
 
 type KeeperStorage interface {
-	GetDataByUserId(ctx context.Context, userID int64) ([]model.Keeper, error)
+	GetDataByUserID(ctx context.Context, userID int64) ([]model.Keeper, error)
 	GetDataByID(ctx context.Context, dataID int64) (model.Keeper, error)
 	AddData(ctx context.Context, keeper model.AddKeeper, userID int64) (model.Keeper, error)
 	UpdateData(ctx context.Context, keeper model.AddKeeper, dataID int64) (model.Keeper, error)

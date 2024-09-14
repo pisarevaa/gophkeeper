@@ -1,16 +1,16 @@
 package handler
 
 import (
-	"net/http"
 	"context"
+	"net/http"
 	"strings"
 
-	"github.com/pisarevaa/gophkeeper/internal/server/utils"
 	"github.com/pisarevaa/gophkeeper/internal/server/model"
+	"github.com/pisarevaa/gophkeeper/internal/server/utils"
 )
 
 // Мидлвар по авторизации запросов по токену.
-func (s *Handler) JWTAuthMiddleware(h http.Handler) http.Handler { //nolint:stylecheck // it's ok
+func (s *Handler) JWTAuthMiddleware(h http.Handler) http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		authorization := r.Header["Authorization"]
 

@@ -23,9 +23,9 @@ type AddKeeper struct {
 }
 
 type DataResponse struct {
-	ID        int64          `json:"id"`
-	Data      string         `json:"data"`
-	Type      DataTypeEnum   `json:"type"`
-	CreatedAt DateTime `json:"createdAt"`
-	UpdatedAt DateTime `json:"updatedAt"`
+	ID        int64        `json:"id"`
+	Data      string       `json:"data"`
+	Type      DataTypeEnum `json:"type"`
+	CreatedAt DateTime     `json:"createdAt"`
+	UpdatedAt DateTime     `json:"updatedAt"`
 }

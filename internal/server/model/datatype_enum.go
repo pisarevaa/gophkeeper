@@ -40,7 +40,7 @@ func (em DataTypeEnum) MarshalText() ([]byte, error) {
 	return []byte(em.String()), nil
 }
 
-func MethodFromString(value string) DataTypeEnum { //nolint:cyclop
+func MethodFromString(value string) DataTypeEnum {
 	switch strings.ToLower(value) {
 	case "text":
 		return TextType

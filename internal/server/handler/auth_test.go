@@ -27,13 +27,16 @@ type ServerTestSuite struct {
 	token  string
 }
 
-const email = "test@example.com"
-const password = "123"
+const (
+	userID   = 1
+	email    = "test@example.com"
+	password = "123"
+)
 
 func (suite *ServerTestSuite) SetupSuite() {
 	suite.config = config.NewConfig()
 	suite.client = resty.New()
-	token, err := utils.GenerateJWTString(suite.config.Security.TokenExpSec, suite.config.Security.SecretKey, email)
+	token, err := utils.GenerateJWTString(suite.config.Security.TokenExpSec, suite.config.Security.SecretKey, userID)
 	suite.Require().NoError(err)
 	suite.token = token
 }

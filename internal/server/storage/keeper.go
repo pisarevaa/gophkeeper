@@ -10,7 +10,7 @@ import (
 )
 
 // Получение всех данных пользователя по ID.
-func (dbpool *DB) GetDataByUserId(ctx context.Context, userID int64) ([]model.Keeper, error) {
+func (dbpool *DB) GetDataByUserID(ctx context.Context, userID int64) ([]model.Keeper, error) {
 	var d []model.Keeper
 	rows, err := dbpool.Query(
 		ctx,

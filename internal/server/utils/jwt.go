@@ -17,7 +17,7 @@ func GenerateJWTString(tokenExpSec int64, secretKey string, userID int64) (strin
 		RegisteredClaims: jwt.RegisteredClaims{
 			ExpiresAt: jwt.NewNumericDate(time.Now().Add(time.Second * time.Duration(tokenExpSec))),
 		},
-		Login: string(userID),
+		Login: strconv.FormatInt(userID, 10),
 	})
 	tokenString, err := token.SignedString([]byte(secretKey))
 	if err != nil {

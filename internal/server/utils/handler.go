@@ -2,13 +2,14 @@ package utils
 
 import (
 	"encoding/json"
+	"errors"
 	"log/slog"
 	"net/http"
+	"strconv"
 	"time"
-	// "github.com/go-chi/chi/v5"
-	// "github.com/pisarevaa/gophkeeper/internal/server/model"
-)
 
+	"github.com/go-chi/chi/v5"
+)
 
 // Кодирование ответа в JSON.
 func JSON(w http.ResponseWriter, status int, model any) {
@@ -36,17 +37,28 @@ func SetTokenCookie(w http.ResponseWriter, token string, tokenExpSec int64) {
 	http.SetCookie(w, &cookie)
 }
 
+// Получение ID данных из урра.
+func GetDataID(r *http.Request) (int64, error) {
+	dataIDString := chi.URLParam(r, "dataID")
+	if dataIDString == "" {
+		return 0, errors.New("path param dataID is not set")
+	}
+	dataID, err := strconv.ParseInt(dataIDString, 10, 64)
+	if err != nil {
+		return 0, errors.New("path param dataID is not integer")
+	}
+	return dataID, nil
+}
 
-// // Получение ID данных из урра.
 // func GetDataID(w http.ResponseWriter, r *http.Request) {
 // 	dataIDString := chi.URLParam(r, "dataID")
 // 	if dataIDString == "" {
-// 		s.JSON(w, http.StatusUnprocessableEntity, model.Error{Error: "Path param dataID is not set"})
+// 		JSON(w, http.StatusUnprocessableEntity, model.Error{Error: "Path param dataID is not set"})
 // 		return
 // 	}
 // 	dataID, err := strconv.ParseInt(dataIDString, 10, 64)
 //     if err != nil {
-//         s.JSON(w, http.StatusUnprocessableEntity, model.Error{Error: "Path param dataID is not integer"})
+//         JSON(w, http.StatusUnprocessableEntity, model.Error{Error: "Path param dataID is not integer"})
 // 		return
 //     }
 // }

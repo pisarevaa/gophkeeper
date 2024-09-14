@@ -9,7 +9,7 @@ import (
 
 // Получение всех данных пользователя по ID.
 func (s *KeeperService) GetData(ctx context.Context, userID int64) ([]model.Keeper, int, error) {
-	data, err := s.Storage.GetDataByUserId(ctx, userID)
+	data, err := s.Storage.GetDataByUserID(ctx, userID)
 	if err != nil {
 		return data, http.StatusInternalServerError, err
 	}

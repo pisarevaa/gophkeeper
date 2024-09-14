@@ -10,8 +10,8 @@ type RegisterUser struct {
 }
 
 type UserResponse struct {
-	ID        int64          `json:"id"`
-	Email     string         `json:"email"`
+	ID        int64    `json:"id"`
+	Email     string   `json:"email"`
 	CreatedAt DateTime `json:"createdAt"`
 }
 
