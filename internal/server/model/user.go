@@ -2,8 +2,6 @@ package model
 
 import (
 	"time"
-
-	"github.com/pisarevaa/gophkeeper/internal/server/utils"
 )
 
 type RegisterUser struct {
@@ -14,7 +12,7 @@ type RegisterUser struct {
 type UserResponse struct {
 	ID        int64          `json:"id"`
 	Email     string         `json:"email"`
-	CreatedAt utils.Datetime `json:"createdAt"`
+	CreatedAt DateTime `json:"createdAt"`
 }
 
 type User struct {

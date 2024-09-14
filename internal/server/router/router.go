@@ -1,6 +1,7 @@
 package router
 
 import (
+	"net/http"
 	"github.com/go-chi/chi/v5"
 	"github.com/go-chi/cors"
 
@@ -32,8 +33,18 @@ func NewRouter(handlers *handler.Handler) chi.Router {
 	// if config.Key != "" {
 	// 	r.Use(srv.HashCheckMiddleware)
 	// }
-	// Маршруты
-	r.Post("/api/register", handlers.RegisterUser)
-	r.Post("/api/login", handlers.Login)
+	// Маршруты авторизации
+	r.Post("/auth/register", handlers.RegisterUser)
+	r.Post("/auth/login", handlers.Login)
+	// Добавление маршрутов с авторизацией
+	r.Mount("/admin", AuthedRouter(handlers))
+	return r
+}
+
+func AuthedRouter(handlers *handler.Handler) http.Handler {
+	r := chi.NewRouter()
+	r.Use(handlers.JWTAuthMiddleware)
+	r.Get("/api/data", handlers.GetData)
+	r.Get("/api/data/{dataID}", handlers.GetDataByID)
 	return r
 }

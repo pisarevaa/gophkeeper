@@ -16,6 +16,11 @@ definitions:
     - email
     - password
     type: object
+  model.TokenResponse:
+    properties:
+      token:
+        type: string
+    type: object
   model.UserResponse:
     properties:
       createdAt:
@@ -48,16 +53,24 @@ paths:
         "200":
           description: Response
           schema:
-            $ref: '#/definitions/model.UserResponse'
-        "409":
-          description: Email is already used
+            $ref: '#/definitions/model.TokenResponse'
+        "401":
+          description: Incorrect password
+          schema:
+            $ref: '#/definitions/model.Error'
+        "404":
+          description: Email is not found
+          schema:
+            $ref: '#/definitions/model.Error'
+        "422":
+          description: Unprocessable entity
           schema:
             $ref: '#/definitions/model.Error'
         "500":
-          description: Error
+          description: nternal server error
           schema:
             $ref: '#/definitions/model.Error'
-      summary: Regiser user
+      summary: Login user
       tags:
       - Log
 swagger: "2.0"

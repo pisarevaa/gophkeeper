@@ -38,7 +38,7 @@ func (s *AuthService) Login(ctx context.Context, user model.RegisterUser) (strin
 		return "", http.StatusUnauthorized, errors.New("некорректный пароль")
 	}
 
-	token, err := utils.GenerateJWTString(s.Config.Security.TokenExpSec, s.Config.Security.SecretKey, foundUser.Email)
+	token, err := utils.GenerateJWTString(s.Config.Security.TokenExpSec, s.Config.Security.SecretKey, foundUser.ID)
 	if err != nil {
 		return "", http.StatusInternalServerError, err
 	}

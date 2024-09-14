@@ -26,7 +26,7 @@ const docTemplate = `{
                 "tags": [
                     "Log"
                 ],
-                "summary": "Regiser user",
+                "summary": "Login user",
                 "parameters": [
                     {
                         "description": "Body",
@@ -42,17 +42,29 @@ const docTemplate = `{
                     "200": {
                         "description": "Response",
                         "schema": {
-                            "$ref": "#/definitions/model.UserResponse"
+                            "$ref": "#/definitions/model.TokenResponse"
                         }
                     },
-                    "409": {
-                        "description": "Email is already used",
+                    "401": {
+                        "description": "Incorrect password",
+                        "schema": {
+                            "$ref": "#/definitions/model.Error"
+                        }
+                    },
+                    "404": {
+                        "description": "Email is not found",
+                        "schema": {
+                            "$ref": "#/definitions/model.Error"
+                        }
+                    },
+                    "422": {
+                        "description": "Unprocessable entity",
                         "schema": {
                             "$ref": "#/definitions/model.Error"
                         }
                     },
                     "500": {
-                        "description": "Error",
+                        "description": "nternal server error",
                         "schema": {
                             "$ref": "#/definitions/model.Error"
                         }
@@ -84,6 +96,14 @@ const docTemplate = `{
                 "password": {
                     "type": "string",
                     "maxLength": 130
+                }
+            }
+        },
+        "model.TokenResponse": {
+            "type": "object",
+            "properties": {
+                "token": {
+                    "type": "string"
                 }
             }
         },

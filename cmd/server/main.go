@@ -13,6 +13,7 @@ import (
 	"github.com/pisarevaa/gophkeeper/internal/server/logger"
 	"github.com/pisarevaa/gophkeeper/internal/server/router"
 	"github.com/pisarevaa/gophkeeper/internal/server/service/auth"
+	"github.com/pisarevaa/gophkeeper/internal/server/service/keeper"
 	"github.com/pisarevaa/gophkeeper/internal/server/storage"
 	"github.com/pisarevaa/gophkeeper/internal/server/utils"
 )
@@ -38,17 +39,23 @@ func main() {
 	if err != nil {
 		panic(err)
 	}
-	defer repo.CloseConnection()
+	defer storage.CloseConnection(repo)
 
 	authService := auth.NewService(
 		auth.WithConfig(config),
 		auth.WithStorage(repo),
 	)
 
+	keeperService := keeper.NewService(
+		keeper.WithConfig(config),
+		keeper.WithStorage(repo),
+	)
+
 	handlers := handler.NewHandler(
 		handler.WithConfig(config),
 		handler.WithValidator(validator),
 		handler.WithAuthService(authService),
+		handler.WithKeeperService(keeperService),
 	)
 	srv := &http.Server{
 		Addr:         config.Host,

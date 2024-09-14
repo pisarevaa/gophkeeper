@@ -25,22 +25,22 @@ import (
 func (s *Handler) RegisterUser(w http.ResponseWriter, r *http.Request) {
 	var user model.RegisterUser
 	if err := json.NewDecoder(r.Body).Decode(&user); err != nil {
-		s.JSON(w, http.StatusUnprocessableEntity, model.Error{Error: err.Error()})
+		utils.JSON(w, http.StatusUnprocessableEntity, model.Error{Error: err.Error()})
 		return
 	}
 	if err := s.Validator.Struct(user); err != nil {
-		s.JSON(w, http.StatusUnprocessableEntity, model.Error{Error: err.Error()})
+		utils.JSON(w, http.StatusUnprocessableEntity, model.Error{Error: err.Error()})
 		return
 	}
 	newUser, status, err := s.AuthService.RegisterUser(r.Context(), user)
 	if err != nil {
-		s.JSON(w, status, model.Error{Error: err.Error()})
+		utils.JSON(w, status, model.Error{Error: err.Error()})
 		return
 	}
-	s.JSON(w, http.StatusOK, model.UserResponse{
+	utils.JSON(w, http.StatusOK, model.UserResponse{
 		ID:        newUser.ID,
 		Email:     newUser.Email,
-		CreatedAt: utils.Datetime(newUser.CreatedAt),
+		CreatedAt: model.DateTime(newUser.CreatedAt),
 	})
 }
 
@@ -62,21 +62,21 @@ func (s *Handler) RegisterUser(w http.ResponseWriter, r *http.Request) {
 func (s *Handler) Login(w http.ResponseWriter, r *http.Request) {
 	var user model.RegisterUser
 	if err := json.NewDecoder(r.Body).Decode(&user); err != nil {
-		s.JSON(w, http.StatusUnprocessableEntity, model.Error{Error: err.Error()})
+		utils.JSON(w, http.StatusUnprocessableEntity, model.Error{Error: err.Error()})
 		return
 	}
 	if err := s.Validator.Struct(user); err != nil {
-		s.JSON(w, http.StatusUnprocessableEntity, model.Error{Error: err.Error()})
+		utils.JSON(w, http.StatusUnprocessableEntity, model.Error{Error: err.Error()})
 		return
 	}
 	token, status, err := s.AuthService.Login(r.Context(), user)
 	if err != nil {
-		s.JSON(w, status, model.Error{Error: err.Error()})
+		utils.JSON(w, status, model.Error{Error: err.Error()})
 		return
 	}
 	w.Header().Set("Authorization", token)
-	s.SetTokenCookie(w, token, s.Config.Security.TokenExpSec)
-	s.JSON(w, http.StatusOK, model.TokenResponse{
+	utils.SetTokenCookie(w, token, s.Config.Security.TokenExpSec)
+	utils.JSON(w, http.StatusOK, model.TokenResponse{
 		Token: token,
 	})
 }

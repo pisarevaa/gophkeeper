@@ -1,20 +1,17 @@
 package handler
 
 import (
-	"encoding/json"
-	"log/slog"
-	"net/http"
-	"time"
-
 	"github.com/go-playground/validator/v10"
 	"github.com/pisarevaa/gophkeeper/internal/server/config"
-	user "github.com/pisarevaa/gophkeeper/internal/server/service/auth"
+	"github.com/pisarevaa/gophkeeper/internal/server/service/auth"
+	"github.com/pisarevaa/gophkeeper/internal/server/service/keeper"
 )
 
 type Handler struct {
-	Config      config.Config
-	Validator   *validator.Validate
-	AuthService user.Service
+	Config        config.Config
+	Validator     *validator.Validate
+	AuthService   auth.Service
+	KeeperService keeper.Service
 }
 
 type Option func(*Handler)
@@ -31,9 +28,15 @@ func WithValidator(validator *validator.Validate) Option {
 	}
 }
 
-func WithAuthService(authService user.Service) Option {
+func WithAuthService(authService auth.Service) Option {
 	return func(s *Handler) {
 		s.AuthService = authService
+	}
+}
+
+func WithKeeperService(keeperService keeper.Service) Option {
+	return func(s *Handler) {
+		s.KeeperService = keeperService
 	}
 }
 
@@ -44,30 +47,4 @@ func NewHandler(options ...Option) *Handler {
 		option(h)
 	}
 	return h
-}
-
-// Кодирование ответа в JSON.
-func (h *Handler) JSON(w http.ResponseWriter, status int, model any) {
-	bytes, err := json.Marshal(model)
-	if err != nil {
-		http.Error(w, err.Error(), http.StatusInternalServerError)
-		return
-	}
-	if status != http.StatusOK {
-		slog.Error(string(bytes))
-	}
-	w.Header().Set("Content-Type", "application/json")
-	http.Error(w, string(bytes), status)
-}
-
-// Установка куки авторизации с токеном.
-func (h *Handler) SetTokenCookie(w http.ResponseWriter, token string, tokenExpSec int64) {
-	cookie := http.Cookie{}
-	cookie.Name = "token"
-	cookie.Value = token
-	cookie.Expires = time.Now().Add(time.Duration(tokenExpSec))
-	cookie.Secure = false
-	cookie.HttpOnly = true
-	cookie.Path = "/"
-	http.SetCookie(w, &cookie)
 }
