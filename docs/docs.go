@@ -104,6 +104,22 @@ const docTemplate = `{
                     "Data"
                 ],
                 "summary": "Update binary data",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "Data ID",
+                        "name": "dataId",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "Bearer",
+                        "name": "Authorization",
+                        "in": "header",
+                        "required": true
+                    }
+                ],
                 "responses": {
                     "200": {
                         "description": "Response",
@@ -144,6 +160,24 @@ const docTemplate = `{
                     "Data"
                 ],
                 "summary": "Add text data",
+                "parameters": [
+                    {
+                        "description": "Body",
+                        "name": "request",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/model.AddTextData"
+                        }
+                    },
+                    {
+                        "type": "string",
+                        "description": "Bearer",
+                        "name": "Authorization",
+                        "in": "header",
+                        "required": true
+                    }
+                ],
                 "responses": {
                     "200": {
                         "description": "Response",
@@ -184,6 +218,31 @@ const docTemplate = `{
                     "Data"
                 ],
                 "summary": "Update text data",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "Data ID",
+                        "name": "dataId",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "description": "Body",
+                        "name": "request",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/model.AddTextData"
+                        }
+                    },
+                    {
+                        "type": "string",
+                        "description": "Bearer",
+                        "name": "Authorization",
+                        "in": "header",
+                        "required": true
+                    }
+                ],
                 "responses": {
                     "200": {
                         "description": "Response",
@@ -224,6 +283,22 @@ const docTemplate = `{
                     "Data"
                 ],
                 "summary": "Get data by ID",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "Data ID",
+                        "name": "dataId",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "Bearer",
+                        "name": "Authorization",
+                        "in": "header",
+                        "required": true
+                    }
+                ],
                 "responses": {
                     "200": {
                         "description": "Response",
@@ -268,6 +343,22 @@ const docTemplate = `{
                     "Data"
                 ],
                 "summary": "Delete data",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "Data ID",
+                        "name": "dataId",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "Bearer",
+                        "name": "Authorization",
+                        "in": "header",
+                        "required": true
+                    }
+                ],
                 "responses": {
                     "200": {
                         "description": "Response",
@@ -406,6 +497,22 @@ const docTemplate = `{
         }
     },
     "definitions": {
+        "model.AddTextData": {
+            "type": "object",
+            "required": [
+                "data",
+                "name"
+            ],
+            "properties": {
+                "data": {
+                    "type": "string"
+                },
+                "name": {
+                    "type": "string",
+                    "maxLength": 250
+                }
+            }
+        },
         "model.DataResponse": {
             "type": "object",
             "properties": {
@@ -417,6 +524,9 @@ const docTemplate = `{
                 },
                 "id": {
                     "type": "integer"
+                },
+                "name": {
+                    "type": "string"
                 },
                 "type": {
                     "$ref": "#/definitions/model.DataTypeEnum"
@@ -465,7 +575,7 @@ const docTemplate = `{
                 },
                 "password": {
                     "type": "string",
-                    "maxLength": 130
+                    "maxLength": 250
                 }
             }
         },

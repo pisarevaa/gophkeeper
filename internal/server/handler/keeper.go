@@ -56,11 +56,13 @@ func (s *Handler) GetData(w http.ResponseWriter, r *http.Request) {
 //	@Tags		Data
 //	@Accept		json
 //	@Produce	json
-//	@Success	200	{object}	model.DataResponse	"Response"
-//	@Failure	422	{object}	model.Error			"Unprocessable entity (query)"
-//	@Failure	404	{object}	model.Error			"Data is not found"
-//	@Failure	401	{object}	model.Error			"Unauthorized request"
-//	@Failure	500	{object}	model.Error			"Internal server error"
+//	@Param		dataId			path		int					true	"Data ID"
+//	@Param		Authorization	header		string				true	"Bearer"
+//	@Success	200				{object}	model.DataResponse	"Response"
+//	@Failure	422				{object}	model.Error			"Unprocessable entity (query)"
+//	@Failure	404				{object}	model.Error			"Data is not found"
+//	@Failure	401				{object}	model.Error			"Unauthorized request"
+//	@Failure	500				{object}	model.Error			"Internal server error"
 //	@Router		/api/data/{dataID} [get]
 func (s *Handler) GetDataByID(w http.ResponseWriter, r *http.Request) {
 	userID, ok := r.Context().Value("userID").(int64)
@@ -95,10 +97,12 @@ func (s *Handler) GetDataByID(w http.ResponseWriter, r *http.Request) {
 //	@Tags		Data
 //	@Accept		json
 //	@Produce	json
-//	@Success	200	{object}	model.DataResponse	"Response"
-//	@Failure	422	{object}	model.Error			"Unprocessable entity (body)"
-//	@Failure	401	{object}	model.Error			"Unauthorized request"
-//	@Failure	500	{object}	model.Error			"Internal server error"
+//	@Param		request			body		model.AddTextData	true	"Body"
+//	@Param		Authorization	header		string				true	"Bearer"
+//	@Success	200				{object}	model.DataResponse	"Response"
+//	@Failure	422				{object}	model.Error			"Unprocessable entity (body)"
+//	@Failure	401				{object}	model.Error			"Unauthorized request"
+//	@Failure	500				{object}	model.Error			"Internal server error"
 //	@Router		/api/data/text [post]
 func (s *Handler) AddTextData(w http.ResponseWriter, r *http.Request) {
 	userID, ok := r.Context().Value("userID").(int64)
@@ -115,7 +119,7 @@ func (s *Handler) AddTextData(w http.ResponseWriter, r *http.Request) {
 		utils.JSON(w, http.StatusUnprocessableEntity, model.Error{Error: err.Error()})
 		return
 	}
-	data, status, err := s.KeeperService.AddTextData(r.Context(), textData.Data, userID)
+	data, status, err := s.KeeperService.AddTextData(r.Context(), textData.Name, textData.Data, userID)
 	if err != nil {
 		utils.JSON(w, status, model.Error{Error: err.Error()})
 		return
@@ -153,7 +157,7 @@ func (s *Handler) AddBinaryData(w http.ResponseWriter, r *http.Request) {
 		utils.JSON(w, http.StatusUnprocessableEntity, model.Error{Error: err.Error()})
 		return
 	}
-	data, status, err := s.KeeperService.AddBinaryData(r.Context(), body, userID)
+	data, status, err := s.KeeperService.AddBinaryData(r.Context(), "", body, userID)
 	if err != nil {
 		utils.JSON(w, status, model.Error{Error: err.Error()})
 		return
@@ -175,10 +179,13 @@ func (s *Handler) AddBinaryData(w http.ResponseWriter, r *http.Request) {
 //	@Tags		Data
 //	@Accept		json
 //	@Produce	json
-//	@Success	200	{object}	model.DataResponse	"Response"
-//	@Failure	422	{object}	model.Error			"Unprocessable entity (query or body)"
-//	@Failure	401	{object}	model.Error			"Unauthorized request"
-//	@Failure	500	{object}	model.Error			"Internal server error"
+//	@Param		dataId			path		int					true	"Data ID"
+//	@Param		request			body		model.AddTextData	true	"Body"
+//	@Param		Authorization	header		string				true	"Bearer"
+//	@Success	200				{object}	model.DataResponse	"Response"
+//	@Failure	422				{object}	model.Error			"Unprocessable entity (query or body)"
+//	@Failure	401				{object}	model.Error			"Unauthorized request"
+//	@Failure	500				{object}	model.Error			"Internal server error"
 //	@Router		/api/data/text/{dataID} [put]
 func (s *Handler) UpdateTextData(w http.ResponseWriter, r *http.Request) {
 	userID, ok := r.Context().Value("userID").(int64)
@@ -200,7 +207,7 @@ func (s *Handler) UpdateTextData(w http.ResponseWriter, r *http.Request) {
 		utils.JSON(w, http.StatusUnprocessableEntity, model.Error{Error: err.Error()})
 		return
 	}
-	data, status, err := s.KeeperService.UpdateTextData(r.Context(), textData.Data, userID, dataID)
+	data, status, err := s.KeeperService.UpdateTextData(r.Context(), textData.Name, textData.Data, userID, dataID)
 	if err != nil {
 		utils.JSON(w, status, model.Error{Error: err.Error()})
 		return
@@ -222,10 +229,12 @@ func (s *Handler) UpdateTextData(w http.ResponseWriter, r *http.Request) {
 //	@Tags		Data
 //	@Accept		multipart/form-data
 //	@Produce	json
-//	@Success	200	{object}	model.DataResponse	"Response"
-//	@Failure	422	{object}	model.Error			"Unprocessable entity (query or body)"
-//	@Failure	401	{object}	model.Error			"Unauthorized request"
-//	@Failure	500	{object}	model.Error			"Internal server error"
+//	@Param		dataId			path		int					true	"Data ID"
+//	@Param		Authorization	header		string				true	"Bearer"
+//	@Success	200				{object}	model.DataResponse	"Response"
+//	@Failure	422				{object}	model.Error			"Unprocessable entity (query or body)"
+//	@Failure	401				{object}	model.Error			"Unauthorized request"
+//	@Failure	500				{object}	model.Error			"Internal server error"
 //	@Router		/api/data/binary/{dataID} [put]
 func (s *Handler) UpdateBinaryData(w http.ResponseWriter, r *http.Request) {
 	userID, ok := r.Context().Value("userID").(int64)
@@ -243,7 +252,7 @@ func (s *Handler) UpdateBinaryData(w http.ResponseWriter, r *http.Request) {
 		utils.JSON(w, http.StatusInternalServerError, model.Error{Error: err.Error()})
 		return
 	}
-	data, status, err := s.KeeperService.UpdateBinaryData(r.Context(), body, userID, dataID)
+	data, status, err := s.KeeperService.UpdateBinaryData(r.Context(), "", body, userID, dataID)
 	if err != nil {
 		utils.JSON(w, status, model.Error{Error: err.Error()})
 		return
@@ -265,10 +274,12 @@ func (s *Handler) UpdateBinaryData(w http.ResponseWriter, r *http.Request) {
 //	@Tags		Data
 //	@Accept		json
 //	@Produce	json
-//	@Success	200	{object}	model.DataResponse	"Response"
-//	@Failure	422	{object}	model.Error			"Unprocessable entity (query)"
-//	@Failure	401	{object}	model.Error			"Unauthorized request"
-//	@Failure	500	{object}	model.Error			"Internal server error"
+//	@Param		dataId			path		int					true	"Data ID"
+//	@Param		Authorization	header		string				true	"Bearer"
+//	@Success	200				{object}	model.DataResponse	"Response"
+//	@Failure	422				{object}	model.Error			"Unprocessable entity (query)"
+//	@Failure	401				{object}	model.Error			"Unauthorized request"
+//	@Failure	500				{object}	model.Error			"Internal server error"
 //	@Router		/api/data/{dataID} [delete]
 func (s *Handler) DeleteData(w http.ResponseWriter, r *http.Request) {
 	userID, ok := r.Context().Value("userID").(int64)

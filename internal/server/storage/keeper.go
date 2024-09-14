@@ -14,7 +14,7 @@ func (dbpool *DB) GetDataByUserID(ctx context.Context, userID int64) ([]model.Ke
 	var d []model.Keeper
 	rows, err := dbpool.Query(
 		ctx,
-		"SELECT id, data, type, user_id, created_at, updated_at FROM data_text WHERE user_id = $1",
+		"SELECT id, name, data, type, user_id, created_at, updated_at FROM keeper WHERE user_id = $1",
 		userID,
 	)
 	if err != nil {
@@ -23,7 +23,7 @@ func (dbpool *DB) GetDataByUserID(ctx context.Context, userID int64) ([]model.Ke
 	defer rows.Close()
 	for rows.Next() {
 		var o model.Keeper
-		err = rows.Scan(&o.ID, &o.Data, &o.Type, &o.UserID, &o.CreatedAt, &o.UpdatedAt)
+		err = rows.Scan(&o.ID, &o.Name, &o.Data, &o.Type, &o.UserID, &o.CreatedAt, &o.UpdatedAt)
 		if err != nil {
 			return d, err
 		}
@@ -37,9 +37,9 @@ func (dbpool *DB) GetDataByID(ctx context.Context, dataID int64) (model.Keeper, 
 	var d model.Keeper
 	err := dbpool.QueryRow(
 		ctx,
-		"SELECT id, data, type, user_id, created_at, updated_at FROM data_text WHERE id = $1",
+		"SELECT id, name, data, type, user_id, created_at, updated_at FROM keeper WHERE id = $1",
 		dataID,
-	).Scan(&d.ID, &d.Data, &d.Type, &d.UserID, &d.CreatedAt, &d.UpdatedAt)
+	).Scan(&d.ID, &d.Name, &d.Data, &d.Type, &d.UserID, &d.CreatedAt, &d.UpdatedAt)
 	if err != nil {
 		return d, err
 	}
@@ -51,11 +51,12 @@ func (dbpool *DB) AddData(ctx context.Context, keeper model.AddKeeper, userID in
 	var d model.Keeper
 	err := dbpool.QueryRow(
 		ctx,
-		"INSERT INTO data_text (data, type, user_id) VALUES ($1, $2) RETURNING id, data, type, user_id, created_at, updated_at",
+		"INSERT INTO keeper (name, data, type, user_id) VALUES ($1, $2, $3, $4) RETURNING id, name, data, type, user_id, created_at, updated_at",
+		keeper.Name,
 		keeper.Data,
 		keeper.Type,
 		userID,
-	).Scan(&d.ID, &d.Data, &d.Type, &d.UserID, &d.CreatedAt, &d.UpdatedAt)
+	).Scan(&d.ID, &d.Name, &d.Data, &d.Type, &d.UserID, &d.CreatedAt, &d.UpdatedAt)
 	if err != nil {
 		return d, err
 	}
@@ -67,9 +68,12 @@ func (dbpool *DB) UpdateData(ctx context.Context, keeper model.AddKeeper, dataID
 	var d model.Keeper
 	err := dbpool.QueryRow(
 		ctx,
-		"UPDATE data_text SET data = $1 WHERE id = $2 RETURNING id, data, type, user_id, created_at, updated_at",
-		keeper.Data, keeper.Type, dataID,
-	).Scan(&d.ID, &d.Data, &d.Type, &d.UserID, &d.CreatedAt, &d.UpdatedAt)
+		"UPDATE keeper SET name = $1, data = $2, type = $3 WHERE id = $4 RETURNING id, name, data, type, user_id, created_at, updated_at",
+		keeper.Name,
+		keeper.Data,
+		keeper.Type,
+		dataID,
+	).Scan(&d.ID, &d.Name, &d.Data, &d.Type, &d.UserID, &d.CreatedAt, &d.UpdatedAt)
 	if err != nil {
 		return d, err
 	}
@@ -81,9 +85,9 @@ func (dbpool *DB) DeleteData(ctx context.Context, dataID int64) (model.Keeper, e
 	var d model.Keeper
 	err := dbpool.QueryRow(
 		ctx,
-		"DELETE data_text WHERE id = $1 RETURNING id, data, type, user_id, created_at, updated_at",
+		"DELETE keeper WHERE id = $1 RETURNING id, name, data, type, user_id, created_at, updated_at",
 		dataID,
-	).Scan(&d.ID, &d.Data, &d.Type, &d.UserID, &d.CreatedAt, &d.UpdatedAt)
+	).Scan(&d.ID, &d.Name, &d.Data, &d.Type, &d.UserID, &d.CreatedAt, &d.UpdatedAt)
 	if err != nil {
 		return d, err
 	}

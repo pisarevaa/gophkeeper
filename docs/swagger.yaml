@@ -1,4 +1,15 @@
 definitions:
+  model.AddTextData:
+    properties:
+      data:
+        type: string
+      name:
+        maxLength: 250
+        type: string
+    required:
+    - data
+    - name
+    type: object
   model.DataResponse:
     properties:
       createdAt:
@@ -7,6 +18,8 @@ definitions:
         type: string
       id:
         type: integer
+      name:
+        type: string
       type:
         $ref: '#/definitions/model.DataTypeEnum'
       updatedAt:
@@ -37,7 +50,7 @@ definitions:
         maxLength: 250
         type: string
       password:
-        maxLength: 130
+        maxLength: 250
         type: string
     required:
     - email
@@ -91,6 +104,17 @@ paths:
     delete:
       consumes:
       - application/json
+      parameters:
+      - description: Data ID
+        in: path
+        name: dataId
+        required: true
+        type: integer
+      - description: Bearer
+        in: header
+        name: Authorization
+        required: true
+        type: string
       produces:
       - application/json
       responses:
@@ -116,6 +140,17 @@ paths:
     get:
       consumes:
       - application/json
+      parameters:
+      - description: Data ID
+        in: path
+        name: dataId
+        required: true
+        type: integer
+      - description: Bearer
+        in: header
+        name: Authorization
+        required: true
+        type: string
       produces:
       - application/json
       responses:
@@ -172,6 +207,17 @@ paths:
     put:
       consumes:
       - multipart/form-data
+      parameters:
+      - description: Data ID
+        in: path
+        name: dataId
+        required: true
+        type: integer
+      - description: Bearer
+        in: header
+        name: Authorization
+        required: true
+        type: string
       produces:
       - application/json
       responses:
@@ -198,6 +244,18 @@ paths:
     post:
       consumes:
       - application/json
+      parameters:
+      - description: Body
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/model.AddTextData'
+      - description: Bearer
+        in: header
+        name: Authorization
+        required: true
+        type: string
       produces:
       - application/json
       responses:
@@ -224,6 +282,23 @@ paths:
     put:
       consumes:
       - application/json
+      parameters:
+      - description: Data ID
+        in: path
+        name: dataId
+        required: true
+        type: integer
+      - description: Body
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/model.AddTextData'
+      - description: Bearer
+        in: header
+        name: Authorization
+        required: true
+        type: string
       produces:
       - application/json
       responses:

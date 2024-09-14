@@ -6,6 +6,7 @@ import (
 
 type Keeper struct {
 	ID        int64
+	Name      string
 	Data      string
 	Type      DataTypeEnum
 	UserID    int64
@@ -14,16 +15,19 @@ type Keeper struct {
 }
 
 type AddTextData struct {
-	Data string `json:"data" validate:"required,data"`
+	Name string `json:"name" validate:"required,lt=0,lte=250"`
+	Data string `json:"data" validate:"required,lt=0"`
 }
 
 type AddKeeper struct {
+	Name string
 	Data string
 	Type DataTypeEnum
 }
 
 type DataResponse struct {
 	ID        int64        `json:"id"`
+	Nmae      string       `json:"name"`
 	Data      string       `json:"data"`
 	Type      DataTypeEnum `json:"type"`
 	CreatedAt DateTime     `json:"createdAt"`

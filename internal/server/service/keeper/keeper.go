@@ -29,8 +29,14 @@ func (s *KeeperService) GetDataByID(ctx context.Context, userID int64, dataID in
 }
 
 // Добавление текстовых данных.
-func (s *KeeperService) AddTextData(ctx context.Context, textData string, userID int64) (model.Keeper, int, error) {
+func (s *KeeperService) AddTextData(
+	ctx context.Context,
+	name string,
+	textData string,
+	userID int64,
+) (model.Keeper, int, error) {
 	keeper := model.AddKeeper{
+		Name: name,
 		Data: textData,
 		Type: model.TextType,
 	}
@@ -42,9 +48,15 @@ func (s *KeeperService) AddTextData(ctx context.Context, textData string, userID
 }
 
 // Добавление бинарных данных.
-func (s *KeeperService) AddBinaryData(ctx context.Context, binaryData []byte, userID int64) (model.Keeper, int, error) {
+func (s *KeeperService) AddBinaryData(
+	ctx context.Context,
+	name string,
+	binaryData []byte,
+	userID int64,
+) (model.Keeper, int, error) {
 	linkToS3 := "/..."
 	keeper := model.AddKeeper{
+		Name: name,
 		Data: linkToS3,
 		Type: model.BinaryType,
 	}
@@ -58,6 +70,7 @@ func (s *KeeperService) AddBinaryData(ctx context.Context, binaryData []byte, us
 // Обновление текстовых данных по ID.
 func (s *KeeperService) UpdateTextData(
 	ctx context.Context,
+	name string,
 	textData string,
 	userID int64,
 	dataID int64,
@@ -67,6 +80,7 @@ func (s *KeeperService) UpdateTextData(
 		return foundData, status, err
 	}
 	keeper := model.AddKeeper{
+		Name: name,
 		Data: textData,
 		Type: model.TextType,
 	}
@@ -80,6 +94,7 @@ func (s *KeeperService) UpdateTextData(
 // Обновление бинарных данных по ID.
 func (s *KeeperService) UpdateBinaryData(
 	ctx context.Context,
+	name string,
 	binaryData []byte,
 	userID int64,
 	dataID int64,
