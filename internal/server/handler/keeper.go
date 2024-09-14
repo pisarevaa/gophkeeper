@@ -38,6 +38,7 @@ func (s *Handler) GetData(w http.ResponseWriter, r *http.Request) {
 			ordersResponse,
 			model.DataResponse{
 				ID:        d.ID,
+				Name:      d.Name,
 				Data:      d.Data,
 				Type:      d.Type,
 				CreatedAt: model.DateTime(d.CreatedAt),
@@ -82,6 +83,7 @@ func (s *Handler) GetDataByID(w http.ResponseWriter, r *http.Request) {
 	}
 	utils.JSON(w, http.StatusOK, model.DataResponse{
 		ID:        data.ID,
+		Name:      data.Name,
 		Data:      data.Data,
 		Type:      data.Type,
 		CreatedAt: model.DateTime(data.CreatedAt),
@@ -126,6 +128,7 @@ func (s *Handler) AddTextData(w http.ResponseWriter, r *http.Request) {
 	}
 	utils.JSON(w, http.StatusOK, model.DataResponse{
 		ID:        data.ID,
+		Name:      data.Name,
 		Data:      data.Data,
 		Type:      data.Type,
 		CreatedAt: model.DateTime(data.CreatedAt),
@@ -152,11 +155,25 @@ func (s *Handler) AddBinaryData(w http.ResponseWriter, r *http.Request) {
 		utils.JSON(w, http.StatusInternalServerError, model.Error{Error: "Error to cast userID into int64"})
 		return
 	}
-	body, err := io.ReadAll(r.Body)
+	// Читаем данные не больше 10 Мб
+	err := r.ParseMultipartForm(100 << 10)
 	if err != nil {
 		utils.JSON(w, http.StatusUnprocessableEntity, model.Error{Error: err.Error()})
 		return
 	}
+	// Получение имени
+	name := r.FormValue("name")
+	if name == "" {
+		utils.JSON(w, http.StatusUnprocessableEntity, model.Error{Error: "Name is empty"})
+		return
+	}
+	// Получение файла
+	_, err = utils.ReadBinaryData(r)
+	if err != nil {
+		utils.JSON(w, http.StatusUnprocessableEntity, model.Error{Error: err.Error()})
+		return
+	}
+	var body []byte
 	data, status, err := s.KeeperService.AddBinaryData(r.Context(), "", body, userID)
 	if err != nil {
 		utils.JSON(w, status, model.Error{Error: err.Error()})
@@ -164,6 +181,7 @@ func (s *Handler) AddBinaryData(w http.ResponseWriter, r *http.Request) {
 	}
 	utils.JSON(w, http.StatusOK, model.DataResponse{
 		ID:        data.ID,
+		Name:      data.Name,
 		Data:      data.Data,
 		Type:      data.Type,
 		CreatedAt: model.DateTime(data.CreatedAt),
@@ -214,6 +232,7 @@ func (s *Handler) UpdateTextData(w http.ResponseWriter, r *http.Request) {
 	}
 	utils.JSON(w, http.StatusOK, model.DataResponse{
 		ID:        data.ID,
+		Name:      data.Name,
 		Data:      data.Data,
 		Type:      data.Type,
 		CreatedAt: model.DateTime(data.CreatedAt),
@@ -259,6 +278,7 @@ func (s *Handler) UpdateBinaryData(w http.ResponseWriter, r *http.Request) {
 	}
 	utils.JSON(w, http.StatusOK, model.DataResponse{
 		ID:        data.ID,
+		Name:      data.Name,
 		Data:      data.Data,
 		Type:      data.Type,
 		CreatedAt: model.DateTime(data.CreatedAt),
@@ -299,6 +319,7 @@ func (s *Handler) DeleteData(w http.ResponseWriter, r *http.Request) {
 	}
 	utils.JSON(w, http.StatusOK, model.DataResponse{
 		ID:        data.ID,
+		Name:      data.Name,
 		Data:      data.Data,
 		Type:      data.Type,
 		CreatedAt: model.DateTime(data.CreatedAt),

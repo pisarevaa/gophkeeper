@@ -15,8 +15,8 @@ type Keeper struct {
 }
 
 type AddTextData struct {
-	Name string `json:"name" validate:"required,lt=0,lte=250"`
-	Data string `json:"data" validate:"required,lt=0"`
+	Name string `json:"name" validate:"required,gt=0,lte=250"`
+	Data string `json:"data" validate:"required,gt=0"`
 }
 
 type AddKeeper struct {
@@ -27,9 +27,16 @@ type AddKeeper struct {
 
 type DataResponse struct {
 	ID        int64        `json:"id"`
-	Nmae      string       `json:"name"`
+	Name      string       `json:"name"`
 	Data      string       `json:"data"`
 	Type      DataTypeEnum `json:"type"`
 	CreatedAt DateTime     `json:"createdAt"`
 	UpdatedAt DateTime     `json:"updatedAt"`
+}
+
+type UploadedFile struct {
+	Size        int64
+	ContentType string
+	Filename    string
+	FileContent string
 }
