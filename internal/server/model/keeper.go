@@ -13,7 +13,7 @@ type Keeper struct {
 	UpdatedAt time.Time
 }
 
-type AddDataText struct {
+type AddTextData struct {
 	Data string `json:"data" validate:"required,data"`
 }
 

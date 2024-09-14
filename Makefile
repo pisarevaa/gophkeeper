@@ -7,8 +7,9 @@ test:
 	go clean -testcache && go test -v ./internal/...
 
 mock_generate:
-	mockgen -source=internal/server/storage/types.go -destination=internal/server/mocks/storage.go -package=mock Storage
-	mockgen -source=internal/server/service/auth/types.go -destination=internal/server/mocks/auth.go -package=mock AuthService
+	mockgen -source=internal/server/storage/types.go -destination=internal/server/mocks/storage.go -package=mock AuthStorage,KeeperStorage
+	mockgen -source=internal/server/service/auth/types.go -destination=internal/server/mocks/auth.go -package=mock AuthServicer
+	mockgen -source=internal/server/service/keeper/types.go -destination=internal/server/mocks/keeper.go -package=mock KeeperServicer
 
 swag_generate:
 	swag init --dir cmd/server,internal

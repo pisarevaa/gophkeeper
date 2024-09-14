@@ -48,7 +48,7 @@ func TestAgentSuite(t *testing.T) {
 func (suite *ServerTestSuite) TestRegisterUser() {
 	ctrl := gomock.NewController(suite.T())
 	defer ctrl.Finish()
-	m := mock.NewMockStorage(ctrl)
+	m := mock.NewMockAuthStorage(ctrl)
 	m.EXPECT().
 		GetUserByEmail(gomock.Any(), gomock.Any()).
 		Return(model.User{}, errors.New("email не найден"))
@@ -81,7 +81,7 @@ func (suite *ServerTestSuite) TestRegisterUser() {
 	resp, err := suite.client.R().
 		SetBody(user).
 		SetHeader("Content-Type", "application/json").
-		Post(ts.URL + "/api/register")
+		Post(ts.URL + "/auth/register")
 	suite.Require().NoError(err)
 	suite.Require().Equal(200, resp.StatusCode())
 }
@@ -89,7 +89,7 @@ func (suite *ServerTestSuite) TestRegisterUser() {
 func (suite *ServerTestSuite) TestLogin() {
 	ctrl := gomock.NewController(suite.T())
 	defer ctrl.Finish()
-	m := mock.NewMockStorage(ctrl)
+	m := mock.NewMockAuthStorage(ctrl)
 	passwordHash, _ := utils.GetPasswordHash(password, suite.config.Security.SecretKey)
 	m.EXPECT().
 		GetUserByEmail(gomock.Any(), gomock.Any()).
@@ -121,7 +121,7 @@ func (suite *ServerTestSuite) TestLogin() {
 	resp, err := suite.client.R().
 		SetBody(user).
 		SetHeader("Content-Type", "application/json").
-		Post(ts.URL + "/api/login")
+		Post(ts.URL + "/auth/login")
 	suite.Require().NoError(err)
 	suite.Require().Equal(200, resp.StatusCode())
 }

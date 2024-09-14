@@ -28,8 +28,12 @@ func (s *KeeperService) GetDataByID(ctx context.Context, userID int64, dataID in
 	return data, 0, nil
 }
 
-// Добавление новых данных.
-func (s *KeeperService) AddData(ctx context.Context, keeper model.AddKeeper, userID int64) (model.Keeper, int, error) {
+// Добавление текстовых данных.
+func (s *KeeperService) AddTextData(ctx context.Context, textData string, userID int64) (model.Keeper, int, error) {
+	keeper := model.AddKeeper{
+		Data: textData,
+		Type: model.TextType,
+	}
 	data, err := s.Storage.AddData(ctx, keeper, userID)
 	if err != nil {
 		return data, http.StatusInternalServerError, err
@@ -37,16 +41,57 @@ func (s *KeeperService) AddData(ctx context.Context, keeper model.AddKeeper, use
 	return data, 0, nil
 }
 
-// Обновление данных по ID.
-func (s *KeeperService) UpdateData(
+// Добавление бинарных данных.
+func (s *KeeperService) AddBinaryData(ctx context.Context, binaryData []byte, userID int64) (model.Keeper, int, error) {
+	linkToS3 := "/..."
+	keeper := model.AddKeeper{
+		Data: linkToS3,
+		Type: model.BinaryType,
+	}
+	data, err := s.Storage.AddData(ctx, keeper, userID)
+	if err != nil {
+		return data, http.StatusInternalServerError, err
+	}
+	return data, 0, nil
+}
+
+// Обновление текстовых данных по ID.
+func (s *KeeperService) UpdateTextData(
 	ctx context.Context,
-	keeper model.AddKeeper,
+	textData string,
 	userID int64,
 	dataID int64,
 ) (model.Keeper, int, error) {
 	foundData, status, err := s.GetDataByID(ctx, userID, dataID)
 	if err != nil {
 		return foundData, status, err
+	}
+	keeper := model.AddKeeper{
+		Data: textData,
+		Type: model.TextType,
+	}
+	data, err := s.Storage.UpdateData(ctx, keeper, dataID)
+	if err != nil {
+		return data, http.StatusInternalServerError, err
+	}
+	return data, 0, nil
+}
+
+// Обновление бинарных данных по ID.
+func (s *KeeperService) UpdateBinaryData(
+	ctx context.Context,
+	binaryData []byte,
+	userID int64,
+	dataID int64,
+) (model.Keeper, int, error) {
+	foundData, status, err := s.GetDataByID(ctx, userID, dataID)
+	if err != nil {
+		return foundData, status, err
+	}
+	linkToS3 := "/..."
+	keeper := model.AddKeeper{
+		Data: linkToS3,
+		Type: model.BinaryType,
 	}
 	data, err := s.Storage.UpdateData(ctx, keeper, dataID)
 	if err != nil {

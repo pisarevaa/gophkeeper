@@ -10,8 +10,8 @@ import (
 type Handler struct {
 	Config        config.Config
 	Validator     *validator.Validate
-	AuthService   auth.Service
-	KeeperService keeper.Service
+	AuthService   auth.AuthServicer
+	KeeperService keeper.KeeperServicer
 }
 
 type Option func(*Handler)
@@ -28,13 +28,13 @@ func WithValidator(validator *validator.Validate) Option {
 	}
 }
 
-func WithAuthService(authService auth.Service) Option {
+func WithAuthService(authService auth.AuthServicer) Option {
 	return func(s *Handler) {
 		s.AuthService = authService
 	}
 }
 
-func WithKeeperService(keeperService keeper.Service) Option {
+func WithKeeperService(keeperService keeper.KeeperServicer) Option {
 	return func(s *Handler) {
 		s.KeeperService = keeperService
 	}

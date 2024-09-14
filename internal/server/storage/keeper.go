@@ -46,7 +46,7 @@ func (dbpool *DB) GetDataByID(ctx context.Context, dataID int64) (model.Keeper, 
 	return d, nil
 }
 
-// Добавление новых данных.
+// Добавление данных.
 func (dbpool *DB) AddData(ctx context.Context, keeper model.AddKeeper, userID int64) (model.Keeper, error) {
 	var d model.Keeper
 	err := dbpool.QueryRow(

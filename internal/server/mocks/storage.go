@@ -12,43 +12,31 @@ import (
 	model "github.com/pisarevaa/gophkeeper/internal/server/model"
 )
 
-// MockStorage is a mock of Storage interface.
-type MockStorage struct {
+// MockAuthStorage is a mock of AuthStorage interface.
+type MockAuthStorage struct {
 	ctrl     *gomock.Controller
-	recorder *MockStorageMockRecorder
+	recorder *MockAuthStorageMockRecorder
 }
 
-// MockStorageMockRecorder is the mock recorder for MockStorage.
-type MockStorageMockRecorder struct {
-	mock *MockStorage
+// MockAuthStorageMockRecorder is the mock recorder for MockAuthStorage.
+type MockAuthStorageMockRecorder struct {
+	mock *MockAuthStorage
 }
 
-// NewMockStorage creates a new mock instance.
-func NewMockStorage(ctrl *gomock.Controller) *MockStorage {
-	mock := &MockStorage{ctrl: ctrl}
-	mock.recorder = &MockStorageMockRecorder{mock}
+// NewMockAuthStorage creates a new mock instance.
+func NewMockAuthStorage(ctrl *gomock.Controller) *MockAuthStorage {
+	mock := &MockAuthStorage{ctrl: ctrl}
+	mock.recorder = &MockAuthStorageMockRecorder{mock}
 	return mock
 }
 
 // EXPECT returns an object that allows the caller to indicate expected use.
-func (m *MockStorage) EXPECT() *MockStorageMockRecorder {
+func (m *MockAuthStorage) EXPECT() *MockAuthStorageMockRecorder {
 	return m.recorder
 }
 
-// CloseConnection mocks base method.
-func (m *MockStorage) CloseConnection() {
-	m.ctrl.T.Helper()
-	m.ctrl.Call(m, "CloseConnection")
-}
-
-// CloseConnection indicates an expected call of CloseConnection.
-func (mr *MockStorageMockRecorder) CloseConnection() *gomock.Call {
-	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "CloseConnection", reflect.TypeOf((*MockStorage)(nil).CloseConnection))
-}
-
 // GetUserByEmail mocks base method.
-func (m *MockStorage) GetUserByEmail(ctx context.Context, email string) (model.User, error) {
+func (m *MockAuthStorage) GetUserByEmail(ctx context.Context, email string) (model.User, error) {
 	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "GetUserByEmail", ctx, email)
 	ret0, _ := ret[0].(model.User)
@@ -57,13 +45,13 @@ func (m *MockStorage) GetUserByEmail(ctx context.Context, email string) (model.U
 }
 
 // GetUserByEmail indicates an expected call of GetUserByEmail.
-func (mr *MockStorageMockRecorder) GetUserByEmail(ctx, email interface{}) *gomock.Call {
+func (mr *MockAuthStorageMockRecorder) GetUserByEmail(ctx, email interface{}) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetUserByEmail", reflect.TypeOf((*MockStorage)(nil).GetUserByEmail), ctx, email)
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetUserByEmail", reflect.TypeOf((*MockAuthStorage)(nil).GetUserByEmail), ctx, email)
 }
 
 // GetUserByID mocks base method.
-func (m *MockStorage) GetUserByID(ctx context.Context, userID int64) (model.User, error) {
+func (m *MockAuthStorage) GetUserByID(ctx context.Context, userID int64) (model.User, error) {
 	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "GetUserByID", ctx, userID)
 	ret0, _ := ret[0].(model.User)
@@ -72,13 +60,13 @@ func (m *MockStorage) GetUserByID(ctx context.Context, userID int64) (model.User
 }
 
 // GetUserByID indicates an expected call of GetUserByID.
-func (mr *MockStorageMockRecorder) GetUserByID(ctx, userID interface{}) *gomock.Call {
+func (mr *MockAuthStorageMockRecorder) GetUserByID(ctx, userID interface{}) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetUserByID", reflect.TypeOf((*MockStorage)(nil).GetUserByID), ctx, userID)
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetUserByID", reflect.TypeOf((*MockAuthStorage)(nil).GetUserByID), ctx, userID)
 }
 
 // RegisterUser mocks base method.
-func (m *MockStorage) RegisterUser(ctx context.Context, email, passwordHash string) (model.User, error) {
+func (m *MockAuthStorage) RegisterUser(ctx context.Context, email, passwordHash string) (model.User, error) {
 	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "RegisterUser", ctx, email, passwordHash)
 	ret0, _ := ret[0].(model.User)
@@ -87,7 +75,105 @@ func (m *MockStorage) RegisterUser(ctx context.Context, email, passwordHash stri
 }
 
 // RegisterUser indicates an expected call of RegisterUser.
-func (mr *MockStorageMockRecorder) RegisterUser(ctx, email, passwordHash interface{}) *gomock.Call {
+func (mr *MockAuthStorageMockRecorder) RegisterUser(ctx, email, passwordHash interface{}) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "RegisterUser", reflect.TypeOf((*MockStorage)(nil).RegisterUser), ctx, email, passwordHash)
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "RegisterUser", reflect.TypeOf((*MockAuthStorage)(nil).RegisterUser), ctx, email, passwordHash)
+}
+
+// MockKeeperStorage is a mock of KeeperStorage interface.
+type MockKeeperStorage struct {
+	ctrl     *gomock.Controller
+	recorder *MockKeeperStorageMockRecorder
+}
+
+// MockKeeperStorageMockRecorder is the mock recorder for MockKeeperStorage.
+type MockKeeperStorageMockRecorder struct {
+	mock *MockKeeperStorage
+}
+
+// NewMockKeeperStorage creates a new mock instance.
+func NewMockKeeperStorage(ctrl *gomock.Controller) *MockKeeperStorage {
+	mock := &MockKeeperStorage{ctrl: ctrl}
+	mock.recorder = &MockKeeperStorageMockRecorder{mock}
+	return mock
+}
+
+// EXPECT returns an object that allows the caller to indicate expected use.
+func (m *MockKeeperStorage) EXPECT() *MockKeeperStorageMockRecorder {
+	return m.recorder
+}
+
+// AddData mocks base method.
+func (m *MockKeeperStorage) AddData(ctx context.Context, keeper model.AddKeeper, userID int64) (model.Keeper, error) {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "AddData", ctx, keeper, userID)
+	ret0, _ := ret[0].(model.Keeper)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// AddData indicates an expected call of AddData.
+func (mr *MockKeeperStorageMockRecorder) AddData(ctx, keeper, userID interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "AddData", reflect.TypeOf((*MockKeeperStorage)(nil).AddData), ctx, keeper, userID)
+}
+
+// DeleteData mocks base method.
+func (m *MockKeeperStorage) DeleteData(ctx context.Context, dataID int64) (model.Keeper, error) {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "DeleteData", ctx, dataID)
+	ret0, _ := ret[0].(model.Keeper)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// DeleteData indicates an expected call of DeleteData.
+func (mr *MockKeeperStorageMockRecorder) DeleteData(ctx, dataID interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "DeleteData", reflect.TypeOf((*MockKeeperStorage)(nil).DeleteData), ctx, dataID)
+}
+
+// GetDataByID mocks base method.
+func (m *MockKeeperStorage) GetDataByID(ctx context.Context, dataID int64) (model.Keeper, error) {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "GetDataByID", ctx, dataID)
+	ret0, _ := ret[0].(model.Keeper)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// GetDataByID indicates an expected call of GetDataByID.
+func (mr *MockKeeperStorageMockRecorder) GetDataByID(ctx, dataID interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetDataByID", reflect.TypeOf((*MockKeeperStorage)(nil).GetDataByID), ctx, dataID)
+}
+
+// GetDataByUserID mocks base method.
+func (m *MockKeeperStorage) GetDataByUserID(ctx context.Context, userID int64) ([]model.Keeper, error) {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "GetDataByUserID", ctx, userID)
+	ret0, _ := ret[0].([]model.Keeper)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// GetDataByUserID indicates an expected call of GetDataByUserID.
+func (mr *MockKeeperStorageMockRecorder) GetDataByUserID(ctx, userID interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetDataByUserID", reflect.TypeOf((*MockKeeperStorage)(nil).GetDataByUserID), ctx, userID)
+}
+
+// UpdateData mocks base method.
+func (m *MockKeeperStorage) UpdateData(ctx context.Context, keeper model.AddKeeper, dataID int64) (model.Keeper, error) {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "UpdateData", ctx, keeper, dataID)
+	ret0, _ := ret[0].(model.Keeper)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// UpdateData indicates an expected call of UpdateData.
+func (mr *MockKeeperStorageMockRecorder) UpdateData(ctx, keeper, dataID interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "UpdateData", reflect.TypeOf((*MockKeeperStorage)(nil).UpdateData), ctx, keeper, dataID)
 }
