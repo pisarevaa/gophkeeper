@@ -43,7 +43,7 @@ func NewConfig() Config {
 		Host: getEnvString("HOST", "localhost:8080"),
 		Security: Security{
 			SecretKey:   getEnvString("SECURITY_SECRET_KEY", "7fd315fd5f381bb9035d003dbd904102"),
-			TokenExpSec: getEnvInt64("SECURITY_TOKEN_EXP_SEC", 7200),
+			TokenExpSec: getEnvInt64("SECURITY_TOKEN_EXP_SEC", 7200), //nolint:mnd // it's okey
 		},
 		Database: Database{
 			Dsn: getEnvString(

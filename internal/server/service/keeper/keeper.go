@@ -20,15 +20,15 @@ func (s *KeeperService) GetData(ctx context.Context, userID int64) ([]model.Keep
 		}
 	}
 	if len(binaryObjectIDs) > 0 {
-		urls, err := s.Minio.GetMany(ctx, s.Config.Minio.Bucket, binaryObjectIDs)
-		if err != nil {
-			return data, http.StatusInternalServerError, err
+		urls, errMinio := s.Minio.GetMany(ctx, s.Config.Minio.Bucket, binaryObjectIDs)
+		if errMinio != nil {
+			return data, http.StatusInternalServerError, errMinio
 		}
 		index := 0
 		for i, keeper := range data {
 			if keeper.Type == model.BinaryType {
 				data[i].Data = urls[index]
-				index += 1
+				index++
 			}
 		}
 	}
@@ -45,9 +45,9 @@ func (s *KeeperService) GetDataByID(ctx context.Context, userID int64, dataID in
 		return data, http.StatusUnauthorized, err
 	}
 	if data.Type == model.BinaryType {
-		url, err := s.Minio.GetOne(ctx, s.Config.Minio.Bucket, data.Data)
-		if err != nil {
-			return data, http.StatusNotFound, err
+		url, errMinio := s.Minio.GetOne(ctx, s.Config.Minio.Bucket, data.Data)
+		if errMinio != nil {
+			return data, http.StatusNotFound, errMinio
 		}
 		data.ObjectID = data.Data
 		data.Data = url
@@ -81,13 +81,13 @@ func (s *KeeperService) AddBinaryData(
 	name string,
 	userID int64,
 ) (model.Keeper, int, error) {
-	objectId, err := s.Minio.CreateOne(ctx, s.Config.Minio.Bucket, file)
+	objectID, err := s.Minio.CreateOne(ctx, s.Config.Minio.Bucket, file)
 	if err != nil {
 		return model.Keeper{}, http.StatusInternalServerError, err
 	}
 	keeper := model.AddKeeper{
 		Name: name,
-		Data: objectId,
+		Data: objectID,
 		Type: model.BinaryType,
 	}
 	data, err := s.Storage.AddData(ctx, keeper, userID)
@@ -137,13 +137,13 @@ func (s *KeeperService) UpdateBinaryData(
 	if err != nil {
 		return model.Keeper{}, http.StatusInternalServerError, err
 	}
-	objectId, err := s.Minio.CreateOne(ctx, s.Config.Minio.Bucket, file)
+	objectID, err := s.Minio.CreateOne(ctx, s.Config.Minio.Bucket, file)
 	if err != nil {
 		return model.Keeper{}, http.StatusInternalServerError, err
 	}
 	keeper := model.AddKeeper{
 		Name: name,
-		Data: objectId,
+		Data: objectID,
 		Type: model.BinaryType,
 	}
 	data, err := s.Storage.UpdateData(ctx, keeper, dataID)

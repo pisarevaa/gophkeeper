@@ -23,7 +23,7 @@ const maxUploadSize = 100 << 10
 //	@Failure	500	{object}	model.Error				"Internal server error"
 //	@Router		/api/data [get]
 func (s *Handler) GetData(w http.ResponseWriter, r *http.Request) {
-	userID, ok := r.Context().Value("userID").(int64)
+	userID, ok := r.Context().Value(model.ContextUserID).(int64)
 	if !ok {
 		utils.JSON(w, http.StatusInternalServerError, model.Error{Error: "Error to cast userID into int64"})
 		return
@@ -66,8 +66,8 @@ func (s *Handler) GetData(w http.ResponseWriter, r *http.Request) {
 //	@Failure	401				{object}	model.Error			"Unauthorized request"
 //	@Failure	500				{object}	model.Error			"Internal server error"
 //	@Router		/api/data/{dataID} [get]
-func (s *Handler) GetDataByID(w http.ResponseWriter, r *http.Request) {
-	userID, ok := r.Context().Value("userID").(int64)
+func (s *Handler) GetDataByID(w http.ResponseWriter, r *http.Request) { //nolint:dupl// it's okey
+	userID, ok := r.Context().Value(model.ContextUserID).(int64)
 	if !ok {
 		utils.JSON(w, http.StatusInternalServerError, model.Error{Error: "Error to cast userID into int64"})
 		return
@@ -108,7 +108,7 @@ func (s *Handler) GetDataByID(w http.ResponseWriter, r *http.Request) {
 //	@Failure	500				{object}	model.Error			"Internal server error"
 //	@Router		/api/data/text [post]
 func (s *Handler) AddTextData(w http.ResponseWriter, r *http.Request) {
-	userID, ok := r.Context().Value("userID").(int64)
+	userID, ok := r.Context().Value(model.ContextUserID).(int64)
 	if !ok {
 		utils.JSON(w, http.StatusInternalServerError, model.Error{Error: "Error to cast userID into int64"})
 		return
@@ -154,7 +154,7 @@ func (s *Handler) AddTextData(w http.ResponseWriter, r *http.Request) {
 //	@Failure	500				{object}	model.Error			"Internal server error"
 //	@Router		/api/data/binary [post]
 func (s *Handler) AddBinaryData(w http.ResponseWriter, r *http.Request) {
-	userID, ok := r.Context().Value("userID").(int64)
+	userID, ok := r.Context().Value(model.ContextUserID).(int64)
 	if !ok {
 		utils.JSON(w, http.StatusInternalServerError, model.Error{Error: "Error to cast userID into int64"})
 		return
@@ -208,7 +208,7 @@ func (s *Handler) AddBinaryData(w http.ResponseWriter, r *http.Request) {
 //	@Failure	500				{object}	model.Error			"Internal server error"
 //	@Router		/api/data/text/{dataID} [put]
 func (s *Handler) UpdateTextData(w http.ResponseWriter, r *http.Request) {
-	userID, ok := r.Context().Value("userID").(int64)
+	userID, ok := r.Context().Value(model.ContextUserID).(int64)
 	if !ok {
 		utils.JSON(w, http.StatusInternalServerError, model.Error{Error: "Error to cast userID into int64"})
 		return
@@ -219,12 +219,12 @@ func (s *Handler) UpdateTextData(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	var textData model.AddTextData
-	if err := json.NewDecoder(r.Body).Decode(&textData); err != nil {
-		utils.JSON(w, http.StatusUnprocessableEntity, model.Error{Error: err.Error()})
+	if errDecode := json.NewDecoder(r.Body).Decode(&textData); errDecode != nil {
+		utils.JSON(w, http.StatusUnprocessableEntity, model.Error{Error: errDecode.Error()})
 		return
 	}
-	if err := s.Validator.Struct(textData); err != nil {
-		utils.JSON(w, http.StatusUnprocessableEntity, model.Error{Error: err.Error()})
+	if errValidate := s.Validator.Struct(textData); errValidate != nil {
+		utils.JSON(w, http.StatusUnprocessableEntity, model.Error{Error: errValidate.Error()})
 		return
 	}
 	data, status, err := s.KeeperService.UpdateTextData(r.Context(), textData.Name, textData.Data, userID, dataID)
@@ -260,7 +260,7 @@ func (s *Handler) UpdateTextData(w http.ResponseWriter, r *http.Request) {
 //	@Failure	500				{object}	model.Error			"Internal server error"
 //	@Router		/api/data/binary/{dataID} [put]
 func (s *Handler) UpdateBinaryData(w http.ResponseWriter, r *http.Request) {
-	userID, ok := r.Context().Value("userID").(int64)
+	userID, ok := r.Context().Value(model.ContextUserID).(int64)
 	if !ok {
 		utils.JSON(w, http.StatusInternalServerError, model.Error{Error: "Error to cast userID into int64"})
 		return
@@ -317,8 +317,8 @@ func (s *Handler) UpdateBinaryData(w http.ResponseWriter, r *http.Request) {
 //	@Failure	401				{object}	model.Error			"Unauthorized request"
 //	@Failure	500				{object}	model.Error			"Internal server error"
 //	@Router		/api/data/{dataID} [delete]
-func (s *Handler) DeleteData(w http.ResponseWriter, r *http.Request) {
-	userID, ok := r.Context().Value("userID").(int64)
+func (s *Handler) DeleteData(w http.ResponseWriter, r *http.Request) { //nolint:dupl// it's okey
+	userID, ok := r.Context().Value(model.ContextUserID).(int64)
 	if !ok {
 		utils.JSON(w, http.StatusInternalServerError, model.Error{Error: "Error to cast userID into int64"})
 		return

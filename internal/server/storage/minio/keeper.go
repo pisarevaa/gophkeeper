@@ -3,7 +3,9 @@ package minio
 import (
 	"bytes"
 	"context"
+	"errors"
 	"fmt"
+	"strings"
 	"sync"
 	"time"
 
@@ -17,7 +19,7 @@ func (m *Minio) CreateOne(ctx context.Context, bucket string, file model.Uploade
 	objectID := uuid.New().String()
 	reader := bytes.NewReader(file.Data)
 	_, err := m.PutObject(
-		context.Background(),
+		ctx,
 		bucket,
 		objectID,
 		reader,
@@ -25,17 +27,17 @@ func (m *Minio) CreateOne(ctx context.Context, bucket string, file model.Uploade
 		minio.PutObjectOptions{},
 	)
 	if err != nil {
-		return "", fmt.Errorf("ошибка при создании объекта %s: %v", file.FileName, err)
+		return "", fmt.Errorf("ошибка при создании объекта %v: %w", file.FileName, err)
 	}
 	return objectID, nil
 }
 
 // Получение ссылки на объект Minio.
 func (m *Minio) GetOne(ctx context.Context, bucket string, objectID string) (string, error) {
-	linkExpiedAt := time.Second * 24 * 60 * 60
+	linkExpiedAt := time.Second * 24 * 60 * 60 //nolint:mnd // it's okey
 	url, err := m.PresignedGetObject(ctx, bucket, objectID, linkExpiedAt, nil)
 	if err != nil {
-		return "", fmt.Errorf("ошибка при получении URL для объекта %s: %v", objectID, err)
+		return "", fmt.Errorf("ошибка при получении URL для объекта %v: %w", objectID, err)
 	}
 	return url.String(), nil
 }
@@ -55,7 +57,7 @@ func (m *Minio) GetMany(ctx context.Context, bucket string, objectIDs []string) 
 			defer wg.Done()
 			url, err := m.GetOne(ctx, bucket, objectID)
 			if err != nil {
-				errCh <- model.MinioOperationError{ObjectID: objectID, Error: fmt.Errorf("ошибка при получении объекта %s: %v", objectID, err)}
+				errCh <- model.MinioOperationError{ObjectID: objectID, Error: fmt.Errorf("ошибка при получении объекта %v: %w", objectID, err)}
 				cancel()
 				return
 			}
@@ -79,7 +81,11 @@ func (m *Minio) GetMany(ctx context.Context, bucket string, objectIDs []string) 
 	}
 
 	if len(errs) > 0 {
-		return nil, fmt.Errorf("ошибки при получении объектов: %v", errs)
+		errMsgs := make([]string, len(errs))
+		for i, err := range errs {
+			errMsgs[i] = err.Error()
+		}
+		return nil, fmt.Errorf("ошибки при получении объектов: %w", errors.New(strings.Join(errMsgs, ", ")))
 	}
 
 	return urls, nil

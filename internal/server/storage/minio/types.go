@@ -6,7 +6,7 @@ import (
 	"github.com/pisarevaa/gophkeeper/internal/server/model"
 )
 
-type MinioStorage interface {
+type MinioStorage interface { //nolint:revive // it's okey
 	CreateOne(ctx context.Context, bucket string, file model.UploadedFile) (string, error)
 	GetOne(ctx context.Context, bucket string, objectID string) (string, error)
 	GetMany(ctx context.Context, bucket string, objectIDs []string) ([]string, error)

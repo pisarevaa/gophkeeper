@@ -39,7 +39,7 @@ func (s *Handler) JWTAuthMiddleware(h http.Handler) http.Handler {
 			utils.JSON(w, http.StatusUnauthorized, model.Error{Error: "Authorization token is wrong"})
 			return
 		}
-		ctx := context.WithValue(r.Context(), "userID", userID)
+		ctx := context.WithValue(r.Context(), model.ContextUserID, userID)
 		h.ServeHTTP(w, r.WithContext(ctx))
 	})
 }

@@ -6,7 +6,7 @@ import (
 	"github.com/pisarevaa/gophkeeper/internal/server/model"
 )
 
-type KeeperServicer interface {
+type KeeperServicer interface { //nolint:revive // it's okey
 	GetData(ctx context.Context, userID int64) ([]model.Keeper, int, error)
 	GetDataByID(ctx context.Context, userID int64, dataID int64) (model.Keeper, int, error)
 	AddTextData(ctx context.Context, name string, textData string, userID int64) (model.Keeper, int, error)

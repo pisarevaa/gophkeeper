@@ -116,9 +116,9 @@ func (mr *MockKeeperServicerMockRecorder) GetDataByID(ctx, userID, dataID interf
 }
 
 // UpdateBinaryData mocks base method.
-func (m *MockKeeperServicer) UpdateBinaryData(ctx context.Context, name string, binaryData []byte, userID, dataID int64) (model.Keeper, int, error) {
+func (m *MockKeeperServicer) UpdateBinaryData(ctx context.Context, name string, file model.UploadedFile, userID, dataID int64) (model.Keeper, int, error) {
 	m.ctrl.T.Helper()
-	ret := m.ctrl.Call(m, "UpdateBinaryData", ctx, name, binaryData, userID, dataID)
+	ret := m.ctrl.Call(m, "UpdateBinaryData", ctx, name, file, userID, dataID)
 	ret0, _ := ret[0].(model.Keeper)
 	ret1, _ := ret[1].(int)
 	ret2, _ := ret[2].(error)
@@ -126,9 +126,9 @@ func (m *MockKeeperServicer) UpdateBinaryData(ctx context.Context, name string, 
 }
 
 // UpdateBinaryData indicates an expected call of UpdateBinaryData.
-func (mr *MockKeeperServicerMockRecorder) UpdateBinaryData(ctx, name, binaryData, userID, dataID interface{}) *gomock.Call {
+func (mr *MockKeeperServicerMockRecorder) UpdateBinaryData(ctx, name, file, userID, dataID interface{}) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "UpdateBinaryData", reflect.TypeOf((*MockKeeperServicer)(nil).UpdateBinaryData), ctx, name, binaryData, userID, dataID)
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "UpdateBinaryData", reflect.TypeOf((*MockKeeperServicer)(nil).UpdateBinaryData), ctx, name, file, userID, dataID)
 }
 
 // UpdateTextData mocks base method.
