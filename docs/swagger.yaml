@@ -181,6 +181,22 @@ paths:
     post:
       consumes:
       - multipart/form-data
+      parameters:
+      - description: File
+        in: formData
+        name: file
+        required: true
+        type: file
+      - description: Name
+        in: formData
+        name: name
+        required: true
+        type: string
+      - description: Bearer
+        in: header
+        name: Authorization
+        required: true
+        type: string
       produces:
       - application/json
       responses:
@@ -213,6 +229,16 @@ paths:
         name: dataId
         required: true
         type: integer
+      - description: File
+        in: formData
+        name: file
+        required: true
+        type: file
+      - description: Name
+        in: formData
+        name: name
+        required: true
+        type: string
       - description: Bearer
         in: header
         name: Authorization

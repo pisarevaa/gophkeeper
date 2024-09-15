@@ -64,6 +64,21 @@ func (mr *MockMinioStorageMockRecorder) DeleteOne(ctx, bucket, objectID interfac
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "DeleteOne", reflect.TypeOf((*MockMinioStorage)(nil).DeleteOne), ctx, bucket, objectID)
 }
 
+// GetMany mocks base method.
+func (m *MockMinioStorage) GetMany(ctx context.Context, bucket string, objectID []string) ([]string, error) {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "GetMany", ctx, bucket, objectID)
+	ret0, _ := ret[0].([]string)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// GetMany indicates an expected call of GetMany.
+func (mr *MockMinioStorageMockRecorder) GetMany(ctx, bucket, objectID interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetMany", reflect.TypeOf((*MockMinioStorage)(nil).GetMany), ctx, bucket, objectID)
+}
+
 // GetOne mocks base method.
 func (m *MockMinioStorage) GetOne(ctx context.Context, bucket, objectID string) (string, error) {
 	m.ctrl.T.Helper()

@@ -1,6 +1,7 @@
 package model
 
 import (
+	"io"
 	"time"
 )
 
@@ -17,6 +18,11 @@ type Keeper struct {
 type AddTextData struct {
 	Name string `json:"name" validate:"required,gt=0,lte=250"`
 	Data string `json:"data" validate:"required,gt=0"`
+}
+
+type AddBinarytData struct {
+	Name string
+	File []byte
 }
 
 type AddKeeper struct {
@@ -37,7 +43,13 @@ type DataResponse struct {
 type UploadedFile struct {
 	Size        int64
 	ContentType string
+	File        io.Reader
 	FileName    string
 	FileContent string
 	Data        []byte
+}
+
+type MinioOperationError struct {
+	ObjectID string
+	Error    error
 }

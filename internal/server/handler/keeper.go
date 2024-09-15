@@ -2,12 +2,13 @@ package handler
 
 import (
 	"encoding/json"
-	"io"
 	"net/http"
 
 	"github.com/pisarevaa/gophkeeper/internal/server/model"
 	"github.com/pisarevaa/gophkeeper/internal/server/utils"
 )
+
+const maxUploadSize = 100 << 10
 
 // Get all data
 // GetData godoc
@@ -144,10 +145,13 @@ func (s *Handler) AddTextData(w http.ResponseWriter, r *http.Request) {
 //	@Tags		Data
 //	@Accept		multipart/form-data
 //	@Produce	json
-//	@Success	200	{object}	model.DataResponse	"Response"
-//	@Failure	422	{object}	model.Error			"Unprocessable entity (body)"
-//	@Failure	401	{object}	model.Error			"Unauthorized request"
-//	@Failure	500	{object}	model.Error			"Internal server error"
+//	@Param		file			formData	file				true	"File"
+//	@Param		name			formData	string				true	"Name"
+//	@Param		Authorization	header		string				true	"Bearer"
+//	@Success	200				{object}	model.DataResponse	"Response"
+//	@Failure	422				{object}	model.Error			"Unprocessable entity (body)"
+//	@Failure	401				{object}	model.Error			"Unauthorized request"
+//	@Failure	500				{object}	model.Error			"Internal server error"
 //	@Router		/api/data/binary [post]
 func (s *Handler) AddBinaryData(w http.ResponseWriter, r *http.Request) {
 	userID, ok := r.Context().Value("userID").(int64)
@@ -156,7 +160,7 @@ func (s *Handler) AddBinaryData(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	// Читаем данные не больше 10 Мб
-	err := r.ParseMultipartForm(100 << 10)
+	err := r.ParseMultipartForm(maxUploadSize)
 	if err != nil {
 		utils.JSON(w, http.StatusUnprocessableEntity, model.Error{Error: err.Error()})
 		return
@@ -167,14 +171,12 @@ func (s *Handler) AddBinaryData(w http.ResponseWriter, r *http.Request) {
 		utils.JSON(w, http.StatusUnprocessableEntity, model.Error{Error: "Name is empty"})
 		return
 	}
-	// Получение файла
-	_, err = utils.ReadBinaryData(r)
+	file, err := utils.ReadBinaryData(r)
 	if err != nil {
 		utils.JSON(w, http.StatusUnprocessableEntity, model.Error{Error: err.Error()})
 		return
 	}
-	var body []byte
-	data, status, err := s.KeeperService.AddBinaryData(r.Context(), "", body, userID)
+	data, status, err := s.KeeperService.AddBinaryData(r.Context(), file, name, userID)
 	if err != nil {
 		utils.JSON(w, status, model.Error{Error: err.Error()})
 		return
@@ -249,6 +251,8 @@ func (s *Handler) UpdateTextData(w http.ResponseWriter, r *http.Request) {
 //	@Accept		multipart/form-data
 //	@Produce	json
 //	@Param		dataId			path		int					true	"Data ID"
+//	@Param		file			formData	file				true	"File"
+//	@Param		name			formData	string				true	"Name"
 //	@Param		Authorization	header		string				true	"Bearer"
 //	@Success	200				{object}	model.DataResponse	"Response"
 //	@Failure	422				{object}	model.Error			"Unprocessable entity (query or body)"
@@ -266,12 +270,24 @@ func (s *Handler) UpdateBinaryData(w http.ResponseWriter, r *http.Request) {
 		utils.JSON(w, http.StatusUnprocessableEntity, model.Error{Error: err.Error()})
 		return
 	}
-	body, err := io.ReadAll(r.Body)
+	// Читаем данные не больше 10 Мб
+	err = r.ParseMultipartForm(maxUploadSize)
 	if err != nil {
-		utils.JSON(w, http.StatusInternalServerError, model.Error{Error: err.Error()})
+		utils.JSON(w, http.StatusUnprocessableEntity, model.Error{Error: err.Error()})
 		return
 	}
-	data, status, err := s.KeeperService.UpdateBinaryData(r.Context(), "", body, userID, dataID)
+	// Получение имени
+	name := r.FormValue("name")
+	if name == "" {
+		utils.JSON(w, http.StatusUnprocessableEntity, model.Error{Error: "Name is empty"})
+		return
+	}
+	file, err := utils.ReadBinaryData(r)
+	if err != nil {
+		utils.JSON(w, http.StatusUnprocessableEntity, model.Error{Error: err.Error()})
+		return
+	}
+	data, status, err := s.KeeperService.UpdateBinaryData(r.Context(), file, name, userID, dataID)
 	if err != nil {
 		utils.JSON(w, status, model.Error{Error: err.Error()})
 		return

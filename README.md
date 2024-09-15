@@ -19,6 +19,10 @@ make up_database
 make run_server
 ```
 
+# Swagger документация
+
+[http://localhost:8080/swagger/index.html](http://localhost:8080/swagger/index.html)
+
 # Для разработчиков
 Запус линтеров
 ```
