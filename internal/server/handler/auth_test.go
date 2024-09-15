@@ -30,7 +30,7 @@ type ServerTestSuite struct {
 const (
 	userID   = 1
 	email    = "test@example.com"
-	password = "123"
+	password = "12345678"
 )
 
 func (suite *ServerTestSuite) SetupSuite() {
