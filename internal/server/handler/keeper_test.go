@@ -25,7 +25,7 @@ func (suite *ServerTestSuite) TestGetData() {
 			[]model.Keeper{
 				model.Keeper{
 					ID:        1,
-					Name:      "Text",
+					Name:      "text",
 					Data:      "some data",
 					Type:      model.TextType,
 					UserID:    userID,
@@ -78,13 +78,12 @@ func (suite *ServerTestSuite) TestGetTextDataByID() {
 	ctrl := gomock.NewController(suite.T())
 	defer ctrl.Finish()
 	mockDB := mock.NewMockKeeperStorage(ctrl)
-	mockMinio := mock.NewMockMinioStorage(ctrl)
 	mockDB.EXPECT().
 		GetDataByID(gomock.Any(), gomock.Any()).
 		Return(
 			model.Keeper{
 				ID:        1,
-				Name:      "Text",
+				Name:      "text",
 				Data:      "some data",
 				Type:      model.TextType,
 				UserID:    userID,
@@ -95,7 +94,6 @@ func (suite *ServerTestSuite) TestGetTextDataByID() {
 	keeperService := keeper.NewService(
 		keeper.WithConfig(suite.config),
 		keeper.WithStorage(mockDB),
-		keeper.WithMinio(mockMinio),
 	)
 	handlers := handler.NewHandler(
 		handler.WithConfig(suite.config),
@@ -165,4 +163,170 @@ func (suite *ServerTestSuite) TestGetBinaryDataByID() {
 	suite.Require().NoError(err)
 	suite.Require().Equal(200, resp.StatusCode())
 	suite.Require().Equal(result.Type, model.BinaryType)
+}
+
+func (suite *ServerTestSuite) TestAddTextData() {
+	ctrl := gomock.NewController(suite.T())
+	defer ctrl.Finish()
+	mockDB := mock.NewMockKeeperStorage(ctrl)
+	mockDB.EXPECT().
+		AddData(gomock.Any(), gomock.Any(), gomock.Any()).
+		Return(
+			model.Keeper{
+				ID:        1,
+				Name:      "text",
+				Data:      "some data",
+				Type:      model.TextType,
+				UserID:    userID,
+				CreatedAt: time.Now(),
+				UpdatedAt: time.Now(),
+			}, nil)
+
+	keeperService := keeper.NewService(
+		keeper.WithConfig(suite.config),
+		keeper.WithStorage(mockDB),
+	)
+	handlers := handler.NewHandler(
+		handler.WithConfig(suite.config),
+		handler.WithValidator(utils.NewValidator()),
+		handler.WithKeeperService(keeperService),
+	)
+
+	ts := httptest.NewServer(router.NewRouter(handlers))
+	defer ts.Close()
+
+	var result model.DataResponse
+	body := model.AddTextData{
+		Name: "text",
+		Data: "some data",
+	}
+
+	resp, err := suite.client.R().
+		SetBody(body).
+		SetResult(&result).
+		SetHeader("Content-Type", "application/json").
+		SetHeader("Authorization", "Bearer "+suite.token).
+		Post(ts.URL + "/api/data/text")
+	suite.Require().NoError(err)
+	suite.Require().Equal(200, resp.StatusCode())
+	suite.Require().Equal(result.Type, model.TextType)
+	suite.Require().Equal(result.Name, "text")
+	suite.Require().Equal(result.Data, "some data")
+}
+
+func (suite *ServerTestSuite) TestUpdateTextData() {
+	ctrl := gomock.NewController(suite.T())
+	defer ctrl.Finish()
+	mockDB := mock.NewMockKeeperStorage(ctrl)
+	mockDB.EXPECT().
+		GetDataByID(gomock.Any(), gomock.Any()).
+		Return(
+			model.Keeper{
+				ID:        1,
+				Name:      "text",
+				Data:      "some data",
+				Type:      model.TextType,
+				UserID:    userID,
+				CreatedAt: time.Now(),
+				UpdatedAt: time.Now(),
+			}, nil)
+	mockDB.EXPECT().
+		UpdateData(gomock.Any(), gomock.Any(), gomock.Any()).
+		Return(
+			model.Keeper{
+				ID:        1,
+				Name:      "text",
+				Data:      "some data",
+				Type:      model.TextType,
+				UserID:    userID,
+				CreatedAt: time.Now(),
+				UpdatedAt: time.Now(),
+			}, nil)
+
+	keeperService := keeper.NewService(
+		keeper.WithConfig(suite.config),
+		keeper.WithStorage(mockDB),
+	)
+	handlers := handler.NewHandler(
+		handler.WithConfig(suite.config),
+		handler.WithValidator(utils.NewValidator()),
+		handler.WithKeeperService(keeperService),
+	)
+
+	ts := httptest.NewServer(router.NewRouter(handlers))
+	defer ts.Close()
+
+	var result model.DataResponse
+	body := model.AddTextData{
+		Name: "text",
+		Data: "some data",
+	}
+
+	resp, err := suite.client.R().
+		SetBody(body).
+		SetResult(&result).
+		SetHeader("Content-Type", "application/json").
+		SetHeader("Authorization", "Bearer "+suite.token).
+		Put(ts.URL + "/api/data/text/1")
+	suite.Require().NoError(err)
+	suite.Require().Equal(200, resp.StatusCode())
+	suite.Require().Equal(result.Type, model.TextType)
+	suite.Require().Equal(result.Name, "text")
+	suite.Require().Equal(result.Data, "some data")
+}
+
+func (suite *ServerTestSuite) TestDeleteTextData() {
+	ctrl := gomock.NewController(suite.T())
+	defer ctrl.Finish()
+	mockDB := mock.NewMockKeeperStorage(ctrl)
+	mockDB.EXPECT().
+		GetDataByID(gomock.Any(), gomock.Any()).
+		Return(
+			model.Keeper{
+				ID:        1,
+				Name:      "text",
+				Data:      "some data",
+				Type:      model.TextType,
+				UserID:    userID,
+				CreatedAt: time.Now(),
+				UpdatedAt: time.Now(),
+			}, nil)
+	mockDB.EXPECT().
+		DeleteData(gomock.Any(), gomock.Any()).
+		Return(
+			model.Keeper{
+				ID:        1,
+				Name:      "text",
+				Data:      "some data",
+				Type:      model.TextType,
+				UserID:    userID,
+				CreatedAt: time.Now(),
+				UpdatedAt: time.Now(),
+			}, nil)
+
+	keeperService := keeper.NewService(
+		keeper.WithConfig(suite.config),
+		keeper.WithStorage(mockDB),
+	)
+	handlers := handler.NewHandler(
+		handler.WithConfig(suite.config),
+		handler.WithValidator(utils.NewValidator()),
+		handler.WithKeeperService(keeperService),
+	)
+
+	ts := httptest.NewServer(router.NewRouter(handlers))
+	defer ts.Close()
+
+	var result model.DataResponse
+
+	resp, err := suite.client.R().
+		SetResult(&result).
+		SetHeader("Content-Type", "application/json").
+		SetHeader("Authorization", "Bearer "+suite.token).
+		Delete(ts.URL + "/api/data/1")
+	suite.Require().NoError(err)
+	suite.Require().Equal(200, resp.StatusCode())
+	suite.Require().Equal(result.Type, model.TextType)
+	suite.Require().Equal(result.Name, "text")
+	suite.Require().Equal(result.Data, "some data")
 }

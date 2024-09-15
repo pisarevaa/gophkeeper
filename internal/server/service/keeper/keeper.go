@@ -159,9 +159,11 @@ func (s *KeeperService) DeleteData(ctx context.Context, userID int64, dataID int
 	if err != nil {
 		return foundData, status, err
 	}
-	err = s.Minio.DeleteOne(ctx, s.Config.Minio.Bucket, foundData.ObjectID)
-	if err != nil {
-		return model.Keeper{}, http.StatusInternalServerError, err
+	if foundData.Type == model.BinaryType {
+		err = s.Minio.DeleteOne(ctx, s.Config.Minio.Bucket, foundData.ObjectID)
+		if err != nil {
+			return model.Keeper{}, http.StatusInternalServerError, err
+		}
 	}
 	data, err := s.Storage.DeleteData(ctx, dataID)
 	if err != nil {
