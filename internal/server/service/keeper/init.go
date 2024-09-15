@@ -2,12 +2,12 @@ package keeper
 
 import (
 	"github.com/pisarevaa/gophkeeper/internal/server/config"
-	"github.com/pisarevaa/gophkeeper/internal/server/storage"
+	"github.com/pisarevaa/gophkeeper/internal/server/storage/db"
 )
 
 type KeeperService struct { //nolint:revive // it's okey
 	Config  config.Config
-	Storage storage.KeeperStorage
+	Storage db.KeeperStorage
 }
 
 type Option func(*KeeperService)
@@ -18,7 +18,7 @@ func WithConfig(config config.Config) Option {
 	}
 }
 
-func WithStorage(storage storage.KeeperStorage) Option {
+func WithStorage(storage db.KeeperStorage) Option {
 	return func(s *KeeperService) {
 		s.Storage = storage
 	}

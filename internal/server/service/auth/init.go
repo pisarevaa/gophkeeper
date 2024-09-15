@@ -2,12 +2,12 @@ package auth
 
 import (
 	"github.com/pisarevaa/gophkeeper/internal/server/config"
-	"github.com/pisarevaa/gophkeeper/internal/server/storage"
+	"github.com/pisarevaa/gophkeeper/internal/server/storage/db"
 )
 
 type AuthService struct { //nolint:revive // it's okey
 	Config  config.Config
-	Storage storage.AuthStorage
+	Storage db.AuthStorage
 }
 
 type Option func(*AuthService)
@@ -18,7 +18,7 @@ func WithConfig(config config.Config) Option {
 	}
 }
 
-func WithStorage(storage storage.AuthStorage) Option {
+func WithStorage(storage db.AuthStorage) Option {
 	return func(s *AuthService) {
 		s.Storage = storage
 	}

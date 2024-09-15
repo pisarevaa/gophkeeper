@@ -14,7 +14,7 @@ import (
 	"github.com/pisarevaa/gophkeeper/internal/server/router"
 	"github.com/pisarevaa/gophkeeper/internal/server/service/auth"
 	"github.com/pisarevaa/gophkeeper/internal/server/service/keeper"
-	"github.com/pisarevaa/gophkeeper/internal/server/storage"
+	"github.com/pisarevaa/gophkeeper/internal/server/storage/db"
 	"github.com/pisarevaa/gophkeeper/internal/server/utils"
 )
 
@@ -35,11 +35,11 @@ func main() {
 	logger.NewLogger()
 	config := config.NewConfig()
 	validator := utils.NewValidator()
-	repo, err := storage.NewDB(config.Database.Dsn)
+	repo, err := db.NewDB(config.Database.Dsn)
 	if err != nil {
 		panic(err)
 	}
-	defer storage.CloseConnection(repo)
+	defer db.CloseConnection(repo)
 
 	authService := auth.NewService(
 		auth.WithConfig(config),

@@ -18,6 +18,7 @@ type Security struct {
 }
 
 type Minio struct {
+	Host     string
 	User     string
 	Password string
 	UseSSL   bool
@@ -51,6 +52,7 @@ func NewConfig() Config {
 			),
 		},
 		Minio: Minio{
+			Host:     getEnvString("MINIO_ENDPOINT", "localhost:9000"),
 			User:     getEnvString("MINIO_ROOT_USER", "gophkeeper"),
 			Password: getEnvString("MINIO_ROOT_PASSWORD", "gophkeeper"),
 			UseSSL:   getEnvBool("MINIO_USE_SSL", false),
