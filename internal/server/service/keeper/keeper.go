@@ -49,6 +49,7 @@ func (s *KeeperService) GetDataByID(ctx context.Context, userID int64, dataID in
 		if err != nil {
 			return data, http.StatusNotFound, err
 		}
+		data.ObjectID = data.Data
 		data.Data = url
 	}
 	return data, 0, nil
@@ -123,8 +124,8 @@ func (s *KeeperService) UpdateTextData(
 // Обновление бинарных данных по ID.
 func (s *KeeperService) UpdateBinaryData(
 	ctx context.Context,
-	file model.UploadedFile,
 	name string,
+	file model.UploadedFile,
 	userID int64,
 	dataID int64,
 ) (model.Keeper, int, error) {
@@ -132,22 +133,22 @@ func (s *KeeperService) UpdateBinaryData(
 	if err != nil {
 		return foundData, status, err
 	}
-	oldObjectID := foundData.Data
+	err = s.Minio.DeleteOne(ctx, s.Config.Minio.Bucket, foundData.ObjectID)
+	if err != nil {
+		return model.Keeper{}, http.StatusInternalServerError, err
+	}
 	objectId, err := s.Minio.CreateOne(ctx, s.Config.Minio.Bucket, file)
 	if err != nil {
 		return model.Keeper{}, http.StatusInternalServerError, err
 	}
 	keeper := model.AddKeeper{
+		Name: name,
 		Data: objectId,
 		Type: model.BinaryType,
 	}
 	data, err := s.Storage.UpdateData(ctx, keeper, dataID)
 	if err != nil {
 		return data, http.StatusInternalServerError, err
-	}
-	err = s.Minio.DeleteOne(ctx, s.Config.Minio.Bucket, oldObjectID)
-	if err != nil {
-		return model.Keeper{}, http.StatusInternalServerError, err
 	}
 	return data, 0, nil
 }
@@ -157,6 +158,10 @@ func (s *KeeperService) DeleteData(ctx context.Context, userID int64, dataID int
 	foundData, status, err := s.GetDataByID(ctx, userID, dataID)
 	if err != nil {
 		return foundData, status, err
+	}
+	err = s.Minio.DeleteOne(ctx, s.Config.Minio.Bucket, foundData.ObjectID)
+	if err != nil {
+		return model.Keeper{}, http.StatusInternalServerError, err
 	}
 	data, err := s.Storage.DeleteData(ctx, dataID)
 	if err != nil {

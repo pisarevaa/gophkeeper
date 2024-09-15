@@ -9,6 +9,7 @@ type Keeper struct {
 	ID        int64
 	Name      string
 	Data      string
+	ObjectID  string
 	Type      DataTypeEnum
 	UserID    int64
 	CreatedAt time.Time

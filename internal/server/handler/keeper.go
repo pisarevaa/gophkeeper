@@ -287,7 +287,7 @@ func (s *Handler) UpdateBinaryData(w http.ResponseWriter, r *http.Request) {
 		utils.JSON(w, http.StatusUnprocessableEntity, model.Error{Error: err.Error()})
 		return
 	}
-	data, status, err := s.KeeperService.UpdateBinaryData(r.Context(), file, name, userID, dataID)
+	data, status, err := s.KeeperService.UpdateBinaryData(r.Context(), name, file, userID, dataID)
 	if err != nil {
 		utils.JSON(w, status, model.Error{Error: err.Error()})
 		return

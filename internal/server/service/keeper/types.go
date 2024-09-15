@@ -20,8 +20,8 @@ type KeeperServicer interface {
 	) (model.Keeper, int, error)
 	UpdateBinaryData(
 		ctx context.Context,
-		file model.UploadedFile,
 		name string,
+		file model.UploadedFile,
 		userID int64,
 		dataID int64,
 	) (model.Keeper, int, error)
