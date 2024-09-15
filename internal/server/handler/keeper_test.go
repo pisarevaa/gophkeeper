@@ -266,7 +266,7 @@ func (suite *ServerTestSuite) TestAddBinaryData() {
 			model.Keeper{
 				ID:        1,
 				Name:      "binary",
-				Data:      "some data",
+				Data:      "url",
 				Type:      model.BinaryType,
 				UserID:    userID,
 				CreatedAt: time.Now(),
@@ -369,6 +369,78 @@ func (suite *ServerTestSuite) TestUpdateTextData() {
 	suite.Require().Equal(result.Data, "some data")
 }
 
+func (suite *ServerTestSuite) TestUpdateBinaryData() {
+	ctrl := gomock.NewController(suite.T())
+	defer ctrl.Finish()
+	mockDB := mock.NewMockKeeperStorage(ctrl)
+	mockMinio := mock.NewMockMinioStorage(ctrl)
+	mockDB.EXPECT().
+		GetDataByID(gomock.Any(), gomock.Any()).
+		Return(
+			model.Keeper{
+				ID:        1,
+				Name:      "binary",
+				Data:      "url",
+				Type:      model.BinaryType,
+				UserID:    userID,
+				CreatedAt: time.Now(),
+				UpdatedAt: time.Now(),
+			}, nil)
+	mockDB.EXPECT().
+		UpdateData(gomock.Any(), gomock.Any(), gomock.Any()).
+		Return(
+			model.Keeper{
+				ID:        1,
+				Name:      "binary",
+				Data:      "some data",
+				Type:      model.BinaryType,
+				UserID:    userID,
+				CreatedAt: time.Now(),
+				UpdatedAt: time.Now(),
+			}, nil)
+
+	mockMinio.EXPECT().
+		DeleteOne(gomock.Any(), gomock.Any(), gomock.Any()).
+		Return(nil)
+	mockMinio.EXPECT().
+		GetOne(gomock.Any(), gomock.Any(), gomock.Any()).
+		Return(
+			"123", nil)
+	mockMinio.EXPECT().
+		CreateOne(gomock.Any(), gomock.Any(), gomock.Any()).
+		Return(
+			"123", nil)
+
+	keeperService := keeper.NewService(
+		keeper.WithConfig(suite.config),
+		keeper.WithStorage(mockDB),
+		keeper.WithMinio(mockMinio),
+	)
+	handlers := handler.NewHandler(
+		handler.WithConfig(suite.config),
+		handler.WithValidator(utils.NewValidator()),
+		handler.WithKeeperService(keeperService),
+	)
+
+	ts := httptest.NewServer(router.NewRouter(handlers))
+	defer ts.Close()
+
+	var result model.DataResponse
+
+	buf, contentType, err := getFormData()
+	suite.Require().NoError(err)
+
+	resp, err := suite.client.R().
+		SetBody(buf).
+		SetResult(&result).
+		SetHeader("Content-Type", contentType).
+		SetHeader("Authorization", "Bearer "+suite.token).
+		Put(ts.URL + "/api/data/binary/1")
+	suite.Require().NoError(err)
+	suite.Require().Equal(200, resp.StatusCode())
+	suite.Require().Equal(result.Type, model.BinaryType)
+}
+
 func (suite *ServerTestSuite) TestDeleteTextData() {
 	ctrl := gomock.NewController(suite.T())
 	defer ctrl.Finish()
@@ -423,4 +495,68 @@ func (suite *ServerTestSuite) TestDeleteTextData() {
 	suite.Require().Equal(result.Type, model.TextType)
 	suite.Require().Equal(result.Name, "text")
 	suite.Require().Equal(result.Data, "some data")
+}
+
+func (suite *ServerTestSuite) TestDeleteBinaryData() {
+	ctrl := gomock.NewController(suite.T())
+	defer ctrl.Finish()
+	mockDB := mock.NewMockKeeperStorage(ctrl)
+	mockMinio := mock.NewMockMinioStorage(ctrl)
+	mockDB.EXPECT().
+		GetDataByID(gomock.Any(), gomock.Any()).
+		Return(
+			model.Keeper{
+				ID:        1,
+				Name:      "binary",
+				Data:      "url",
+				Type:      model.BinaryType,
+				UserID:    userID,
+				CreatedAt: time.Now(),
+				UpdatedAt: time.Now(),
+			}, nil)
+	mockDB.EXPECT().
+		DeleteData(gomock.Any(), gomock.Any()).
+		Return(
+			model.Keeper{
+				ID:        1,
+				Name:      "binary",
+				Data:      "some data",
+				Type:      model.BinaryType,
+				UserID:    userID,
+				CreatedAt: time.Now(),
+				UpdatedAt: time.Now(),
+			}, nil)
+
+	mockMinio.EXPECT().
+		DeleteOne(gomock.Any(), gomock.Any(), gomock.Any()).
+		Return(nil)
+	mockMinio.EXPECT().
+		GetOne(gomock.Any(), gomock.Any(), gomock.Any()).
+		Return(
+			"123", nil)
+
+	keeperService := keeper.NewService(
+		keeper.WithConfig(suite.config),
+		keeper.WithStorage(mockDB),
+		keeper.WithMinio(mockMinio),
+	)
+	handlers := handler.NewHandler(
+		handler.WithConfig(suite.config),
+		handler.WithValidator(utils.NewValidator()),
+		handler.WithKeeperService(keeperService),
+	)
+
+	ts := httptest.NewServer(router.NewRouter(handlers))
+	defer ts.Close()
+
+	var result model.DataResponse
+
+	resp, err := suite.client.R().
+		SetResult(&result).
+		SetHeader("Content-Type", "application/json").
+		SetHeader("Authorization", "Bearer "+suite.token).
+		Delete(ts.URL + "/api/data/1")
+	suite.Require().NoError(err)
+	suite.Require().Equal(200, resp.StatusCode())
+	suite.Require().Equal(result.Type, model.BinaryType)
 }
