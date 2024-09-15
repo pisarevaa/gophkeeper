@@ -26,8 +26,8 @@ lint:
 run_server:
 	go run ./cmd/server
 
-up_database:
-	docker compose -f docker-compose.db.yml up -d
+up_database_and_minio:
+	docker compose -f docker-compose.yml up -d
 
 generate_keys:
 	go run ./cmd/generate_keys
