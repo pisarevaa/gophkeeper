@@ -1,7 +1,12 @@
 package handler_test
 
 import (
+	"bytes"
+	"io"
+	"mime/multipart"
 	"net/http/httptest"
+	"os"
+	"strings"
 	"time"
 
 	"github.com/golang/mock/gomock"
@@ -212,6 +217,95 @@ func (suite *ServerTestSuite) TestAddTextData() {
 	suite.Require().Equal(result.Type, model.TextType)
 	suite.Require().Equal(result.Name, "text")
 	suite.Require().Equal(result.Data, "some data")
+}
+
+func getFormData() (*bytes.Buffer, string, error) {
+	reader, err := os.Open("fixtures/test_image.webp")
+	if err != nil {
+		return nil, "", err
+	}
+	values := map[string]io.Reader{
+		"file": reader,
+		"name": strings.NewReader("binary"),
+	}
+
+	var b bytes.Buffer
+	w := multipart.NewWriter(&b)
+	for key, r := range values {
+		var fw io.Writer
+		if x, ok := r.(io.Closer); ok {
+			defer x.Close()
+		}
+		if x, ok := r.(*os.File); ok {
+			if fw, err = w.CreateFormFile(key, x.Name()); err != nil {
+				return nil, "", err
+			}
+		} else {
+			// Add other fields
+			if fw, err = w.CreateFormField(key); err != nil {
+				return nil, "", err
+			}
+		}
+		if _, err = io.Copy(fw, r); err != nil {
+			return nil, "", err
+		}
+	}
+	w.Close()
+	contentType := w.FormDataContentType()
+	return &b, contentType, nil
+}
+
+func (suite *ServerTestSuite) TestAddBinaryData() {
+	ctrl := gomock.NewController(suite.T())
+	defer ctrl.Finish()
+	mockDB := mock.NewMockKeeperStorage(ctrl)
+	mockMinio := mock.NewMockMinioStorage(ctrl)
+	mockDB.EXPECT().
+		AddData(gomock.Any(), gomock.Any(), gomock.Any()).
+		Return(
+			model.Keeper{
+				ID:        1,
+				Name:      "binary",
+				Data:      "some data",
+				Type:      model.BinaryType,
+				UserID:    userID,
+				CreatedAt: time.Now(),
+				UpdatedAt: time.Now(),
+			}, nil)
+
+	mockMinio.EXPECT().
+		CreateOne(gomock.Any(), gomock.Any(), gomock.Any()).
+		Return(
+			"123", nil)
+
+	keeperService := keeper.NewService(
+		keeper.WithConfig(suite.config),
+		keeper.WithStorage(mockDB),
+		keeper.WithMinio(mockMinio),
+	)
+	handlers := handler.NewHandler(
+		handler.WithConfig(suite.config),
+		handler.WithValidator(utils.NewValidator()),
+		handler.WithKeeperService(keeperService),
+	)
+
+	ts := httptest.NewServer(router.NewRouter(handlers))
+	defer ts.Close()
+
+	var result model.DataResponse
+
+	buf, contentType, err := getFormData()
+	suite.Require().NoError(err)
+
+	resp, err := suite.client.R().
+		SetBody(buf).
+		SetResult(&result).
+		SetHeader("Content-Type", contentType).
+		SetHeader("Authorization", "Bearer "+suite.token).
+		Post(ts.URL + "/api/data/binary")
+	suite.Require().NoError(err)
+	suite.Require().Equal(200, resp.StatusCode())
+	suite.Require().Equal(result.Type, model.BinaryType)
 }
 
 func (suite *ServerTestSuite) TestUpdateTextData() {
