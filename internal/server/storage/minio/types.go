@@ -1,0 +1,13 @@
+package minio
+
+import (
+	"context"
+
+	"github.com/pisarevaa/gophkeeper/internal/server/model"
+)
+
+type MinioStorage interface {
+	CreateOne(ctx context.Context, bucket string, file model.UploadedFile) (string, error)
+	GetOne(ctx context.Context, bucket string, objectID string) (string, error)
+	DeleteOne(ctx context.Context, bucket string, objectID string) error
+}

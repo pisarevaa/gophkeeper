@@ -15,6 +15,7 @@ import (
 	"github.com/pisarevaa/gophkeeper/internal/server/service/auth"
 	"github.com/pisarevaa/gophkeeper/internal/server/service/keeper"
 	"github.com/pisarevaa/gophkeeper/internal/server/storage/db"
+	"github.com/pisarevaa/gophkeeper/internal/server/storage/minio"
 	"github.com/pisarevaa/gophkeeper/internal/server/utils"
 )
 
@@ -40,6 +41,10 @@ func main() {
 		panic(err)
 	}
 	defer db.CloseConnection(repo)
+	s3, err := minio.NewMinio(config.Minio)
+	if err != nil {
+		panic(err)
+	}
 
 	authService := auth.NewService(
 		auth.WithConfig(config),
@@ -49,6 +54,7 @@ func main() {
 	keeperService := keeper.NewService(
 		keeper.WithConfig(config),
 		keeper.WithStorage(repo),
+		keeper.WithMinio(s3),
 	)
 
 	handlers := handler.NewHandler(

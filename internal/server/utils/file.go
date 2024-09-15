@@ -37,7 +37,7 @@ func ReadBinaryData(r *http.Request) (model.UploadedFile, error) {
 			}
 			file.Seek(0, 0)
 			newFile.Size = fileSize
-			newFile.Filename = headers.Filename
+			newFile.FileName = headers.Filename
 			contentBuf := bytes.NewBuffer(nil)
 			if _, err := io.Copy(contentBuf, file); err != nil {
 				return newFile, err

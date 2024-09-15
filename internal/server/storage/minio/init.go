@@ -32,9 +32,9 @@ func NewMinio(cfg config.Minio) (*Minio, error) {
 		return nil, err
 	}
 	if !exists {
-		err := coon.MakeBucket(ctx, cfg.Bucket, minio.MakeBucketOptions{})
-		if err != nil {
-			return nil, err
+		errBucket := coon.MakeBucket(ctx, cfg.Bucket, minio.MakeBucketOptions{})
+		if errBucket != nil {
+			return nil, errBucket
 		}
 		slog.Info(fmt.Sprint("Created bucket", cfg.Bucket))
 	}

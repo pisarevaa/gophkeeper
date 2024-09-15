@@ -3,11 +3,13 @@ package keeper
 import (
 	"github.com/pisarevaa/gophkeeper/internal/server/config"
 	"github.com/pisarevaa/gophkeeper/internal/server/storage/db"
+	"github.com/pisarevaa/gophkeeper/internal/server/storage/minio"
 )
 
 type KeeperService struct { //nolint:revive // it's okey
 	Config  config.Config
 	Storage db.KeeperStorage
+	Minio   minio.MinioStorage
 }
 
 type Option func(*KeeperService)
@@ -21,6 +23,12 @@ func WithConfig(config config.Config) Option {
 func WithStorage(storage db.KeeperStorage) Option {
 	return func(s *KeeperService) {
 		s.Storage = storage
+	}
+}
+
+func WithMinio(minio minio.MinioStorage) Option {
+	return func(s *KeeperService) {
+		s.Minio = minio
 	}
 }
 

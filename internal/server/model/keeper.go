@@ -37,6 +37,7 @@ type DataResponse struct {
 type UploadedFile struct {
 	Size        int64
 	ContentType string
-	Filename    string
+	FileName    string
 	FileContent string
+	Data        []byte
 }

@@ -7,7 +7,8 @@ test:
 	go clean -testcache && go test -v ./internal/...
 
 mock_generate:
-	mockgen -source=internal/server/storage/types.go -destination=internal/server/mocks/storage.go -package=mock AuthStorage,KeeperStorage
+	mockgen -source=internal/server/storage/db/types.go -destination=internal/server/mocks/storage.go -package=mock AuthStorage,KeeperStorage
+	mockgen -source=internal/server/storage/minio/types.go -destination=internal/server/mocks/minio.go -package=mock MinioStorage
 	mockgen -source=internal/server/service/auth/types.go -destination=internal/server/mocks/auth.go -package=mock AuthServicer
 	mockgen -source=internal/server/service/keeper/types.go -destination=internal/server/mocks/keeper.go -package=mock KeeperServicer
 

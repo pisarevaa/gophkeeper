@@ -6,7 +6,7 @@ import (
 	"github.com/pisarevaa/gophkeeper/internal/server/model"
 )
 
-type AuthServicer interface {
+type AuthServicer interface { //nolint:revive // it's okey
 	RegisterUser(ctx context.Context, user model.RegisterUser) (model.User, int, error)
 	Login(ctx context.Context, user model.RegisterUser) (string, int, error)
 }
