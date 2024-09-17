@@ -54,16 +54,3 @@ func GetDataID(r *http.Request) (int64, error) {
 	}
 	return dataID, nil
 }
-
-// func GetDataID(w http.ResponseWriter, r *http.Request) {
-// 	dataIDString := chi.URLParam(r, "dataID")
-// 	if dataIDString == "" {
-// 		JSON(w, http.StatusUnprocessableEntity, model.Error{Error: "Path param dataID is not set"})
-// 		return
-// 	}
-// 	dataID, err := strconv.ParseInt(dataIDString, 10, 64)
-//     if err != nil {
-//         JSON(w, http.StatusUnprocessableEntity, model.Error{Error: "Path param dataID is not integer"})
-// 		return
-//     }
-// }

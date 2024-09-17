@@ -1,3 +1,3 @@
-# cmd/gophkeeper
+# cmd/server
 
 Сервер GophKeeper

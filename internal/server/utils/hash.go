@@ -6,6 +6,7 @@ import (
 	"errors"
 )
 
+// Получение хеша пароля.
 func GetPasswordHash(password string, secretKey string) (string, error) {
 	str := []byte(password)
 	str = append(str, []byte(secretKey)...)
@@ -18,6 +19,7 @@ func GetPasswordHash(password string, secretKey string) (string, error) {
 	return sha, nil
 }
 
+// Проверка хеша пароля.
 func CheckPasswordHash(password string, hash string, secretKey string) (bool, error) {
 	hashNew, err := GetPasswordHash(password, secretKey)
 	if err != nil {

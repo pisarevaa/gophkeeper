@@ -10,7 +10,7 @@ cp .env.example .env
 ```
 make generate_keys
 ```
-3. Запустите БД
+3. Запустите БД и Minio
 ```
 make up_database
 ```
