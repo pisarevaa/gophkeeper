@@ -27,8 +27,8 @@ lint:
 run_server:
 	go run ./cmd/server
 
-run_agent:
-	go run ./cmd/agent
+run_gophkeeper:
+	go run ./cmd/gophkeeper
 
 up_database_and_minio:
 	docker compose -f docker-compose.yml up -d

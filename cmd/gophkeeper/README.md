@@ -1,3 +1,3 @@
-# cmd/agent
+# cmd/gophkeeper
 
 Агент GophKeeper
