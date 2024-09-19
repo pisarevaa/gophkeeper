@@ -6,13 +6,13 @@ import (
 	"github.com/urfave/cli/v2"
 
 	"github.com/pisarevaa/gophkeeper/internal/agent/config"
-	"github.com/pisarevaa/gophkeeper/internal/shared/model"
 	"github.com/pisarevaa/gophkeeper/internal/agent/request"
 	"github.com/pisarevaa/gophkeeper/internal/agent/service"
-	"github.com/pisarevaa/gophkeeper/internal/agent/utils"
+	"github.com/pisarevaa/gophkeeper/internal/shared/model"
+	sharedUtils "github.com/pisarevaa/gophkeeper/internal/shared/utils"
 )
 
-func RegisterCommand() *cli.Command {
+func RegisterCommand() *cli.Command { //nolint:dupl // it's ok
 	command := cli.Command{
 		Name:  "register",
 		Usage: "register an account",
@@ -37,12 +37,12 @@ func RegisterCommand() *cli.Command {
 			config := config.NewConfig()
 			service := service.NewService(
 				service.WithClient(request.NewClient(config.ServerHost)),
-				service.WithValidator(utils.NewValidator()),
+				service.WithValidator(sharedUtils.NewValidator()),
 				service.WithConfig(config),
 			)
 			err := service.RegisterUser(user)
 			if err == nil {
-				slog.Info("You are successfully registered in Gophkeeper")
+				slog.Info("You are successfully registered into Gophkeeper")
 			} else {
 				slog.Error("Error: " + err.Error())
 			}
@@ -52,7 +52,7 @@ func RegisterCommand() *cli.Command {
 	return &command
 }
 
-func LoginCommand() *cli.Command {
+func LoginCommand() *cli.Command { //nolint:dupl // it's ok
 	command := cli.Command{
 		Name:  "login",
 		Usage: "login into account",
@@ -77,12 +77,12 @@ func LoginCommand() *cli.Command {
 			config := config.NewConfig()
 			service := service.NewService(
 				service.WithClient(request.NewClient(config.ServerHost)),
-				service.WithValidator(utils.NewValidator()),
+				service.WithValidator(sharedUtils.NewValidator()),
 				service.WithConfig(config),
 			)
-			err := service.RegisterUser(user)
+			err := service.LoginUser(user)
 			if err == nil {
-				slog.Info("You are successfully registered in Gophkeeper")
+				slog.Info("You are successfully login into Gophkeeper")
 			} else {
 				slog.Error("Error: " + err.Error())
 			}

@@ -4,6 +4,7 @@ import (
 	"errors"
 	"net/http"
 
+	"github.com/pisarevaa/gophkeeper/internal/agent/utils"
 	"github.com/pisarevaa/gophkeeper/internal/shared/model"
 )
 
@@ -12,7 +13,7 @@ func (s *Service) RegisterUser(user model.RegisterUser) error {
 	if err := s.Validator.Struct(user); err != nil {
 		return err
 	}
-	status, err := s.Client.RegisterUser(user)
+	_, status, err := s.Client.RegisterUser(user)
 	if err != nil {
 		return err
 	}
@@ -33,12 +34,15 @@ func (s *Service) LoginUser(user model.RegisterUser) error {
 	if err := s.Validator.Struct(user); err != nil {
 		return err
 	}
-	status, err := s.Client.RegisterUser(user)
+	tokenResponse, status, err := s.Client.LoginUser(user)
 	if err != nil {
 		return err
 	}
 	switch status {
 	case http.StatusOK:
+		if errSave := utils.SaveToDisk(tokenResponse); errSave != nil {
+			return err
+		}
 		return nil
 	case http.StatusUnprocessableEntity:
 		return errors.New("incorrect data provided")

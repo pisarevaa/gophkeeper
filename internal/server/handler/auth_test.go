@@ -14,10 +14,11 @@ import (
 	"github.com/pisarevaa/gophkeeper/internal/server/config"
 	"github.com/pisarevaa/gophkeeper/internal/server/handler"
 	mock "github.com/pisarevaa/gophkeeper/internal/server/mocks"
-	"github.com/pisarevaa/gophkeeper/internal/shared/model"
 	"github.com/pisarevaa/gophkeeper/internal/server/router"
 	"github.com/pisarevaa/gophkeeper/internal/server/service/auth"
 	"github.com/pisarevaa/gophkeeper/internal/server/utils"
+	"github.com/pisarevaa/gophkeeper/internal/shared/model"
+	sharedUtils "github.com/pisarevaa/gophkeeper/internal/shared/utils"
 )
 
 type ServerTestSuite struct {
@@ -67,7 +68,7 @@ func (suite *ServerTestSuite) TestRegisterUser() {
 	)
 	handlers := handler.NewHandler(
 		handler.WithConfig(suite.config),
-		handler.WithValidator(utils.NewValidator()),
+		handler.WithValidator(sharedUtils.NewValidator()),
 		handler.WithAuthService(authService),
 	)
 
@@ -106,7 +107,7 @@ func (suite *ServerTestSuite) TestLogin() {
 	)
 	handlers := handler.NewHandler(
 		handler.WithConfig(suite.config),
-		handler.WithValidator(utils.NewValidator()),
+		handler.WithValidator(sharedUtils.NewValidator()),
 		handler.WithAuthService(authService),
 	)
 

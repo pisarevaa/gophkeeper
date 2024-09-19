@@ -5,19 +5,23 @@ import (
 )
 
 // Запрос на создание пользователя.
-func (c *Client) RegisterUser(user model.RegisterUser) (int, error) {
+func (c *Client) RegisterUser(user model.RegisterUser) (model.UserResponse, int, error) {
+	var createdUser model.UserResponse
 	resp, err := c.Client.R().
+		SetResult(&createdUser).
 		SetBody(user).
 		SetHeader("Content-Type", "application/json").
 		Post(c.ServerHost + "/auth/register")
-	return resp.StatusCode(), err
+	return createdUser, resp.StatusCode(), err
 }
 
 // Запрос на авторизацию пользователя.
-func (c *Client) LoginUser(user model.RegisterUser) (int, error) {
+func (c *Client) LoginUser(user model.RegisterUser) (model.TokenResponse, int, error) {
+	var tokenResponse model.TokenResponse
 	resp, err := c.Client.R().
+		SetResult(&tokenResponse).
 		SetBody(user).
 		SetHeader("Content-Type", "application/json").
 		Post(c.ServerHost + "/auth/register")
-	return resp.StatusCode(), err
+	return tokenResponse, resp.StatusCode(), err
 }

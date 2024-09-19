@@ -13,10 +13,10 @@ import (
 
 	"github.com/pisarevaa/gophkeeper/internal/server/handler"
 	mock "github.com/pisarevaa/gophkeeper/internal/server/mocks"
-	"github.com/pisarevaa/gophkeeper/internal/shared/model"
 	"github.com/pisarevaa/gophkeeper/internal/server/router"
 	"github.com/pisarevaa/gophkeeper/internal/server/service/keeper"
-	"github.com/pisarevaa/gophkeeper/internal/server/utils"
+	"github.com/pisarevaa/gophkeeper/internal/shared/model"
+	sharedUtils "github.com/pisarevaa/gophkeeper/internal/shared/utils"
 )
 
 func (suite *ServerTestSuite) TestGetData() {
@@ -60,7 +60,7 @@ func (suite *ServerTestSuite) TestGetData() {
 	)
 	handlers := handler.NewHandler(
 		handler.WithConfig(suite.config),
-		handler.WithValidator(utils.NewValidator()),
+		handler.WithValidator(sharedUtils.NewValidator()),
 		handler.WithKeeperService(keeperService),
 	)
 
@@ -102,7 +102,7 @@ func (suite *ServerTestSuite) TestGetTextDataByID() {
 	)
 	handlers := handler.NewHandler(
 		handler.WithConfig(suite.config),
-		handler.WithValidator(utils.NewValidator()),
+		handler.WithValidator(sharedUtils.NewValidator()),
 		handler.WithKeeperService(keeperService),
 	)
 
@@ -151,7 +151,7 @@ func (suite *ServerTestSuite) TestGetBinaryDataByID() {
 	)
 	handlers := handler.NewHandler(
 		handler.WithConfig(suite.config),
-		handler.WithValidator(utils.NewValidator()),
+		handler.WithValidator(sharedUtils.NewValidator()),
 		handler.WithKeeperService(keeperService),
 	)
 
@@ -193,7 +193,7 @@ func (suite *ServerTestSuite) TestAddTextData() {
 	)
 	handlers := handler.NewHandler(
 		handler.WithConfig(suite.config),
-		handler.WithValidator(utils.NewValidator()),
+		handler.WithValidator(sharedUtils.NewValidator()),
 		handler.WithKeeperService(keeperService),
 	)
 
@@ -285,7 +285,7 @@ func (suite *ServerTestSuite) TestAddBinaryData() {
 	)
 	handlers := handler.NewHandler(
 		handler.WithConfig(suite.config),
-		handler.WithValidator(utils.NewValidator()),
+		handler.WithValidator(sharedUtils.NewValidator()),
 		handler.WithKeeperService(keeperService),
 	)
 
@@ -343,7 +343,7 @@ func (suite *ServerTestSuite) TestUpdateTextData() {
 	)
 	handlers := handler.NewHandler(
 		handler.WithConfig(suite.config),
-		handler.WithValidator(utils.NewValidator()),
+		handler.WithValidator(sharedUtils.NewValidator()),
 		handler.WithKeeperService(keeperService),
 	)
 
@@ -418,7 +418,7 @@ func (suite *ServerTestSuite) TestUpdateBinaryData() {
 	)
 	handlers := handler.NewHandler(
 		handler.WithConfig(suite.config),
-		handler.WithValidator(utils.NewValidator()),
+		handler.WithValidator(sharedUtils.NewValidator()),
 		handler.WithKeeperService(keeperService),
 	)
 
@@ -476,7 +476,7 @@ func (suite *ServerTestSuite) TestDeleteTextData() {
 	)
 	handlers := handler.NewHandler(
 		handler.WithConfig(suite.config),
-		handler.WithValidator(utils.NewValidator()),
+		handler.WithValidator(sharedUtils.NewValidator()),
 		handler.WithKeeperService(keeperService),
 	)
 
@@ -542,7 +542,7 @@ func (suite *ServerTestSuite) TestDeleteBinaryData() {
 	)
 	handlers := handler.NewHandler(
 		handler.WithConfig(suite.config),
-		handler.WithValidator(utils.NewValidator()),
+		handler.WithValidator(sharedUtils.NewValidator()),
 		handler.WithKeeperService(keeperService),
 	)
 

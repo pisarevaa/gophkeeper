@@ -5,6 +5,6 @@ import (
 )
 
 type Requester interface {
-	RegisterUser(model.RegisterUser) (status int, err error)
-	LoginUser(model.RegisterUser) (status int, err error)
+	RegisterUser(user model.RegisterUser) (createdUser model.UserResponse, status int, err error)
+	LoginUser(user model.RegisterUser) (tokenResponse model.TokenResponse, status int, err error)
 }

@@ -5,8 +5,8 @@ import (
 	"net/http"
 	"strings"
 
-	"github.com/pisarevaa/gophkeeper/internal/shared/model"
 	"github.com/pisarevaa/gophkeeper/internal/server/utils"
+	"github.com/pisarevaa/gophkeeper/internal/shared/model"
 )
 
 // Мидлвар по авторизации запросов по токену.

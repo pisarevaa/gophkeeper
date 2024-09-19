@@ -5,8 +5,8 @@ import (
 	"errors"
 	"net/http"
 
-	"github.com/pisarevaa/gophkeeper/internal/shared/model"
 	"github.com/pisarevaa/gophkeeper/internal/server/utils"
+	"github.com/pisarevaa/gophkeeper/internal/shared/model"
 )
 
 func (s *AuthService) RegisterUser(ctx context.Context, user model.RegisterUser) (model.User, int, error) {

@@ -16,7 +16,7 @@ import (
 	"github.com/pisarevaa/gophkeeper/internal/server/service/keeper"
 	"github.com/pisarevaa/gophkeeper/internal/server/storage/db"
 	"github.com/pisarevaa/gophkeeper/internal/server/storage/minio"
-	"github.com/pisarevaa/gophkeeper/internal/server/utils"
+	sharedUtils "github.com/pisarevaa/gophkeeper/internal/shared/utils"
 )
 
 const readTimeout = 5
@@ -35,7 +35,7 @@ func main() {
 
 	logger.NewLogger()
 	config := config.NewConfig()
-	validator := utils.NewValidator()
+	validator := sharedUtils.NewValidator()
 	repo, err := db.NewDB(config.Database.Dsn)
 	if err != nil {
 		panic(err)
