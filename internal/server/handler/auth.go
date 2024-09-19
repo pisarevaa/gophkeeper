@@ -4,7 +4,7 @@ import (
 	"encoding/json"
 	"net/http"
 
-	"github.com/pisarevaa/gophkeeper/internal/server/model"
+	"github.com/pisarevaa/gophkeeper/internal/shared/model"
 	"github.com/pisarevaa/gophkeeper/internal/server/utils"
 )
 
@@ -78,5 +78,6 @@ func (s *Handler) Login(w http.ResponseWriter, r *http.Request) {
 	utils.SetTokenCookie(w, token, s.Config.Security.TokenExpSec)
 	utils.JSON(w, http.StatusOK, model.TokenResponse{
 		Token: token,
+		Email: user.Email,
 	})
 }

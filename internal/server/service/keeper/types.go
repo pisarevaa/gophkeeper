@@ -3,7 +3,7 @@ package keeper
 import (
 	"context"
 
-	"github.com/pisarevaa/gophkeeper/internal/server/model"
+	"github.com/pisarevaa/gophkeeper/internal/shared/model"
 )
 
 type KeeperServicer interface { //nolint:revive // it's okey

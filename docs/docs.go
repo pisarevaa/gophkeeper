@@ -619,6 +619,9 @@ const docTemplate = `{
         "model.TokenResponse": {
             "type": "object",
             "properties": {
+                "email": {
+                    "type": "string"
+                },
                 "token": {
                     "type": "string"
                 }

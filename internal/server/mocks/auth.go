@@ -9,7 +9,7 @@ import (
 	reflect "reflect"
 
 	gomock "github.com/golang/mock/gomock"
-	model "github.com/pisarevaa/gophkeeper/internal/server/model"
+	model "github.com/pisarevaa/gophkeeper/internal/shared/model"
 )
 
 // MockAuthServicer is a mock of AuthServicer interface.

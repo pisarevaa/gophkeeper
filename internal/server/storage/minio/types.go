@@ -3,7 +3,7 @@ package minio
 import (
 	"context"
 
-	"github.com/pisarevaa/gophkeeper/internal/server/model"
+	"github.com/pisarevaa/gophkeeper/internal/shared/model"
 )
 
 type MinioStorage interface { //nolint:revive // it's okey

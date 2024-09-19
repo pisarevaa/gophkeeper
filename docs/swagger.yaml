@@ -58,6 +58,8 @@ definitions:
     type: object
   model.TokenResponse:
     properties:
+      email:
+        type: string
       token:
         type: string
     type: object

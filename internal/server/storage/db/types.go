@@ -3,7 +3,7 @@ package db
 import (
 	"context"
 
-	"github.com/pisarevaa/gophkeeper/internal/server/model"
+	"github.com/pisarevaa/gophkeeper/internal/shared/model"
 )
 
 type AuthStorage interface {

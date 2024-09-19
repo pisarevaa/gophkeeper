@@ -22,11 +22,7 @@ type User struct {
 	CreatedAt time.Time
 }
 
-type Login struct {
-	Email    string `json:"email"    validate:"required,email,lte=250"`
-	Password string `json:"password" validate:"required,lte=130"`
-}
-
 type TokenResponse struct {
+	Email string `json:"email"`
 	Token string `json:"token"`
 }

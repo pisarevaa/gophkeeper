@@ -6,7 +6,7 @@ import (
 	_ "github.com/golang-migrate/migrate/v4/database/postgres" // postgres driver
 	_ "github.com/golang-migrate/migrate/v4/source/file"
 
-	"github.com/pisarevaa/gophkeeper/internal/server/model"
+	"github.com/pisarevaa/gophkeeper/internal/shared/model"
 )
 
 // Получение всех данных пользователя по ID.

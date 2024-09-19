@@ -14,7 +14,7 @@ import (
 	"github.com/pisarevaa/gophkeeper/internal/server/config"
 	"github.com/pisarevaa/gophkeeper/internal/server/handler"
 	mock "github.com/pisarevaa/gophkeeper/internal/server/mocks"
-	"github.com/pisarevaa/gophkeeper/internal/server/model"
+	"github.com/pisarevaa/gophkeeper/internal/shared/model"
 	"github.com/pisarevaa/gophkeeper/internal/server/router"
 	"github.com/pisarevaa/gophkeeper/internal/server/service/auth"
 	"github.com/pisarevaa/gophkeeper/internal/server/utils"

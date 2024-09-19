@@ -4,7 +4,7 @@ import (
 	"context"
 	"net/http"
 
-	"github.com/pisarevaa/gophkeeper/internal/server/model"
+	"github.com/pisarevaa/gophkeeper/internal/shared/model"
 )
 
 // Получение всех данных пользователя по ID.

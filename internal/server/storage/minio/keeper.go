@@ -11,7 +11,7 @@ import (
 
 	"github.com/google/uuid"
 	"github.com/minio/minio-go/v7"
-	"github.com/pisarevaa/gophkeeper/internal/server/model"
+	"github.com/pisarevaa/gophkeeper/internal/shared/model"
 )
 
 // Загрузка объекта Minio.
