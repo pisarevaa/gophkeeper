@@ -22,9 +22,9 @@ func (s *Service) GetData() error {
 	}
 	slog.Info("List of data:")
 	for _, row := range dataResponse {
-		rowString, err := json.Marshal(row)
-		if err != nil {
-			return err
+		rowString, errJSON := json.Marshal(row)
+		if errJSON != nil {
+			return errJSON
 		}
 		slog.Info(string(rowString))
 	}
