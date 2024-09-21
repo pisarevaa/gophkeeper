@@ -4,17 +4,14 @@ import (
 	"encoding/json"
 	"log/slog"
 
-	"github.com/pisarevaa/gophkeeper/internal/agent/utils"
 	"github.com/pisarevaa/gophkeeper/internal/shared/model"
 )
 
 // Получение всех данных пользователя.
 func (s *Service) GetData() error {
-	tokenResponse, err := utils.LoadUserDataFromDosk()
-	if err != nil {
+	if err := s.Client.SetToken(); err != nil {
 		return err
 	}
-	s.Client.SetToken(tokenResponse.Token)
 	dataResponse, err := s.Client.GetData()
 	if err != nil {
 		return err
@@ -32,11 +29,9 @@ func (s *Service) GetData() error {
 
 // Получение данных пользователя по ID.
 func (s *Service) GetDataByID(dataID int64) error {
-	tokenResponse, err := utils.LoadUserDataFromDosk()
-	if err != nil {
+	if err := s.Client.SetToken(); err != nil {
 		return err
 	}
-	s.Client.SetToken(tokenResponse.Token)
 	dataResponse, err := s.Client.GetDataByID(dataID)
 	if err != nil {
 		return err
@@ -52,11 +47,9 @@ func (s *Service) GetDataByID(dataID int64) error {
 
 // Добавление текстовых данных пользователем.
 func (s *Service) AddTextData(textData model.AddTextData) error {
-	tokenResponse, err := utils.LoadUserDataFromDosk()
-	if err != nil {
+	if err := s.Client.SetToken(); err != nil {
 		return err
 	}
-	s.Client.SetToken(tokenResponse.Token)
 	dataResponse, err := s.Client.AddTextData(textData)
 	if err != nil {
 		return err
@@ -72,11 +65,9 @@ func (s *Service) AddTextData(textData model.AddTextData) error {
 
 // Обновление текстовых данных пользователем.
 func (s *Service) UpdateTextData(textData model.AddTextData, dataID int64) error {
-	tokenResponse, err := utils.LoadUserDataFromDosk()
-	if err != nil {
+	if err := s.Client.SetToken(); err != nil {
 		return err
 	}
-	s.Client.SetToken(tokenResponse.Token)
 	dataResponse, err := s.Client.UpdateTextData(textData, dataID)
 	if err != nil {
 		return err
@@ -92,11 +83,9 @@ func (s *Service) UpdateTextData(textData model.AddTextData, dataID int64) error
 
 // Добавление бинарных данных пользователем.
 func (s *Service) AddBinaryData(filepath string, name string) error {
-	tokenResponse, err := utils.LoadUserDataFromDosk()
-	if err != nil {
+	if err := s.Client.SetToken(); err != nil {
 		return err
 	}
-	s.Client.SetToken(tokenResponse.Token)
 	dataResponse, err := s.Client.AddBinaryData(filepath, name)
 	if err != nil {
 		return err
@@ -112,11 +101,9 @@ func (s *Service) AddBinaryData(filepath string, name string) error {
 
 // Обновление бинарных данных пользователем.
 func (s *Service) UpdateBinaryData(filepath string, name string, dataID int64) error {
-	tokenResponse, err := utils.LoadUserDataFromDosk()
-	if err != nil {
+	if err := s.Client.SetToken(); err != nil {
 		return err
 	}
-	s.Client.SetToken(tokenResponse.Token)
 	dataResponse, err := s.Client.UpdateBinaryData(filepath, name, dataID)
 	if err != nil {
 		return err
@@ -132,11 +119,9 @@ func (s *Service) UpdateBinaryData(filepath string, name string, dataID int64) e
 
 // Удаление данных пользователя по ID.
 func (s *Service) DeleteData(dataID int64) error {
-	tokenResponse, err := utils.LoadUserDataFromDosk()
-	if err != nil {
+	if err := s.Client.SetToken(); err != nil {
 		return err
 	}
-	s.Client.SetToken(tokenResponse.Token)
 	dataResponse, err := s.Client.DeleteData(dataID)
 	if err != nil {
 		return err

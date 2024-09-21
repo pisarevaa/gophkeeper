@@ -32,6 +32,12 @@ type AddKeeper struct {
 	Type DataTypeEnum
 }
 
+type DataResponseShort struct {
+	ID   int64        `json:"id"`
+	Name string       `json:"name"`
+	Type DataTypeEnum `json:"type"`
+}
+
 type DataResponse struct {
 	ID        int64        `json:"id"`
 	Name      string       `json:"name"`

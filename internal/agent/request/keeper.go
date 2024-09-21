@@ -10,8 +10,8 @@ import (
 )
 
 // Получение всех данных пользователя.
-func (c *Client) GetData() ([]model.DataResponse, error) {
-	var dataResponse []model.DataResponse
+func (c *Client) GetData() ([]model.DataResponseShort, error) {
+	var dataResponse []model.DataResponseShort
 	resp, err := c.Client.R().
 		SetResult(&dataResponse).
 		SetHeader("Content-Type", "application/json").

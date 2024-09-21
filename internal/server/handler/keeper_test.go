@@ -104,7 +104,7 @@ func (suite *ServerTestSuite) TestGetTextDataByID() {
 	ts := httptest.NewServer(router.NewRouter(handlers))
 	defer ts.Close()
 
-	var result model.DataResponse
+	var result model.DataResponseShort
 
 	resp, err := suite.client.R().
 		SetResult(&result).

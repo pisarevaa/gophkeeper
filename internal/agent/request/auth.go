@@ -5,6 +5,7 @@ import (
 	"errors"
 	"net/http"
 
+	"github.com/pisarevaa/gophkeeper/internal/agent/utils"
 	"github.com/pisarevaa/gophkeeper/internal/shared/model"
 )
 
@@ -46,4 +47,16 @@ func (c *Client) LoginUser(user model.RegisterUser) (model.TokenResponse, error)
 		return tokenResponse, err
 	}
 	return tokenResponse, nil
+}
+
+func (c *Client) SetToken() error {
+	tokenResponse, err := utils.LoadUserDataFromDosk()
+	if err != nil {
+		return err
+	}
+	if tokenResponse.Token == "" {
+		return errors.New("token is not found in " + utils.UserFilename + ", login again please")
+	}
+	c.Client.Token = tokenResponse.Token
+	return nil
 }

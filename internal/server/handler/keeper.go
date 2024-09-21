@@ -33,17 +33,14 @@ func (s *Handler) GetData(w http.ResponseWriter, r *http.Request) {
 		utils.JSON(w, status, model.Error{Error: err.Error()})
 		return
 	}
-	var ordersResponse []model.DataResponse
+	var ordersResponse []model.DataResponseShort
 	for _, d := range data {
 		ordersResponse = append(
 			ordersResponse,
-			model.DataResponse{
-				ID:        d.ID,
-				Name:      d.Name,
-				Data:      d.Data,
-				Type:      d.Type,
-				CreatedAt: model.DateTime(d.CreatedAt),
-				UpdatedAt: model.DateTime(d.UpdatedAt),
+			model.DataResponseShort{
+				ID:   d.ID,
+				Name: d.Name,
+				Type: d.Type,
 			},
 		)
 	}
