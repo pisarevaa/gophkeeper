@@ -20,3 +20,7 @@ func NewClient(serverHost string) *Client {
 	restyClient.SetTimeout(timeoutSec * time.Second)
 	return &Client{Client: restyClient, ServerHost: serverHost}
 }
+
+func (c *Client) SetToken(token string) {
+	c.Client.Token = token
+}
