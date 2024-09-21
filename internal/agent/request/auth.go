@@ -1,6 +1,7 @@
 package request
 
 import (
+	"encoding/json"
 	"errors"
 	"net/http"
 
@@ -10,11 +11,8 @@ import (
 // Запрос на создание пользователя.
 func (c *Client) RegisterUser(user model.RegisterUser) (model.UserResponse, error) {
 	var createdUser model.UserResponse
-	var errMsg string
 	resp, err := c.Client.R().
-		SetResult(&createdUser).
 		SetBody(user).
-		SetError(&errMsg).
 		SetHeader("Content-Type", "application/json").
 		Post(c.ServerHost + "/auth/register")
 
@@ -22,7 +20,10 @@ func (c *Client) RegisterUser(user model.RegisterUser) (model.UserResponse, erro
 		return createdUser, err
 	}
 	if resp.StatusCode() != http.StatusOK {
-		return createdUser, errors.New(errMsg)
+		return createdUser, errors.New(string(resp.Body()))
+	}
+	if err = json.Unmarshal(resp.Body(), &createdUser); err != nil {
+		return createdUser, err
 	}
 	return createdUser, nil
 }
@@ -30,19 +31,19 @@ func (c *Client) RegisterUser(user model.RegisterUser) (model.UserResponse, erro
 // Запрос на авторизацию пользователя.
 func (c *Client) LoginUser(user model.RegisterUser) (model.TokenResponse, error) {
 	var tokenResponse model.TokenResponse
-	var errMsg string
 	resp, err := c.Client.R().
-		SetResult(&tokenResponse).
 		SetBody(user).
-		SetError(&errMsg).
 		SetHeader("Content-Type", "application/json").
-		Post(c.ServerHost + "/auth/register")
+		Post(c.ServerHost + "/auth/login")
 
 	if err != nil {
 		return tokenResponse, err
 	}
 	if resp.StatusCode() != http.StatusOK {
-		return tokenResponse, errors.New(errMsg)
+		return tokenResponse, errors.New(string(resp.Body()))
+	}
+	if err = json.Unmarshal(resp.Body(), &tokenResponse); err != nil {
+		return tokenResponse, err
 	}
 	return tokenResponse, nil
 }

@@ -252,11 +252,12 @@ func (suite *ServerTestSuite) TestAddBinaryData() {
 	defer ts.Close()
 
 	var result model.DataResponse
-	formData, err := sharedUtils.CreateFormData("fixtures/test_image.webp", "binary")
-	suite.Require().NoError(err)
 
 	resp, err := suite.client.R().
-		SetBody(formData).
+		SetFile("file", "fixtures/test_image.webp").
+		SetFormData(map[string]string{
+			"name": "binary",
+		}).
 		SetResult(&result).
 		SetHeader("Content-Type", "multipart/form-data").
 		SetHeader("Authorization", "Bearer "+suite.token).
@@ -385,11 +386,11 @@ func (suite *ServerTestSuite) TestUpdateBinaryData() {
 
 	var result model.DataResponse
 
-	formData, err := sharedUtils.CreateFormData("fixtures/test_image.webp", "binary")
-	suite.Require().NoError(err)
-
 	resp, err := suite.client.R().
-		SetBody(formData).
+		SetFile("file", "fixtures/test_image.webp").
+		SetFormData(map[string]string{
+			"name": "binary",
+		}).
 		SetResult(&result).
 		SetHeader("Content-Type", "multipart/form-data").
 		SetHeader("Authorization", "Bearer "+suite.token).

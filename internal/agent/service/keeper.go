@@ -6,7 +6,6 @@ import (
 
 	"github.com/pisarevaa/gophkeeper/internal/agent/utils"
 	"github.com/pisarevaa/gophkeeper/internal/shared/model"
-	sharedUtils "github.com/pisarevaa/gophkeeper/internal/shared/utils"
 )
 
 // Получение всех данных пользователя.
@@ -98,11 +97,7 @@ func (s *Service) AddBinaryData(filepath string, name string) error {
 		return err
 	}
 	s.Client.SetToken(tokenResponse.Token)
-	formData, err := sharedUtils.CreateFormData(filepath, name)
-	if err != nil {
-		return err
-	}
-	dataResponse, err := s.Client.AddBinaryData(formData)
+	dataResponse, err := s.Client.AddBinaryData(filepath, name)
 	if err != nil {
 		return err
 	}
@@ -122,11 +117,7 @@ func (s *Service) UpdateBinaryData(filepath string, name string, dataID int64) e
 		return err
 	}
 	s.Client.SetToken(tokenResponse.Token)
-	formData, err := sharedUtils.CreateFormData(filepath, name)
-	if err != nil {
-		return err
-	}
-	dataResponse, err := s.Client.UpdateBinaryData(formData, dataID)
+	dataResponse, err := s.Client.UpdateBinaryData(filepath, name, dataID)
 	if err != nil {
 		return err
 	}

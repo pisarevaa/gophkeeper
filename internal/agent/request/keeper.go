@@ -2,7 +2,6 @@ package request
 
 import (
 	"encoding/json"
-	"bytes"
 	"errors"
 	"net/http"
 	"strconv"
@@ -33,10 +32,7 @@ func (c *Client) GetData() ([]model.DataResponse, error) {
 // Получение данных пользователя по ID.
 func (c *Client) GetDataByID(dataID int64) (model.DataResponse, error) {
 	var dataResponse model.DataResponse
-	var errMsg string
 	resp, err := c.Client.R().
-		SetResult(&dataResponse).
-		SetError(&errMsg).
 		SetHeader("Content-Type", "application/json").
 		SetHeader("Authorization", "Bearer "+c.Token).
 		Get(c.ServerHost + "/api/data/" + strconv.FormatInt(dataID, 10))
@@ -45,7 +41,10 @@ func (c *Client) GetDataByID(dataID int64) (model.DataResponse, error) {
 		return dataResponse, err
 	}
 	if resp.StatusCode() != http.StatusOK {
-		return dataResponse, errors.New(errMsg)
+		return dataResponse, errors.New(string(resp.Body()))
+	}
+	if err = json.Unmarshal(resp.Body(), &dataResponse); err != nil {
+		return dataResponse, err
 	}
 	return dataResponse, nil
 }
@@ -53,11 +52,9 @@ func (c *Client) GetDataByID(dataID int64) (model.DataResponse, error) {
 // Добавление текстовых данных пользователем.
 func (c *Client) AddTextData(textData model.AddTextData) (model.DataResponse, error) {
 	var dataResponse model.DataResponse
-	var errMsg string
 	resp, err := c.Client.R().
 		SetBody(textData).
 		SetResult(&dataResponse).
-		SetError(&errMsg).
 		SetHeader("Content-Type", "application/json").
 		SetHeader("Authorization", "Bearer "+c.Token).
 		Post(c.ServerHost + "/api/data/text")
@@ -66,7 +63,10 @@ func (c *Client) AddTextData(textData model.AddTextData) (model.DataResponse, er
 		return dataResponse, err
 	}
 	if resp.StatusCode() != http.StatusOK {
-		return dataResponse, errors.New(errMsg)
+		return dataResponse, errors.New(string(resp.Body()))
+	}
+	if err = json.Unmarshal(resp.Body(), &dataResponse); err != nil {
+		return dataResponse, err
 	}
 	return dataResponse, nil
 }
@@ -74,11 +74,8 @@ func (c *Client) AddTextData(textData model.AddTextData) (model.DataResponse, er
 // Обновление текстовых данных пользователем.
 func (c *Client) UpdateTextData(textData model.AddTextData, dataID int64) (model.DataResponse, error) {
 	var dataResponse model.DataResponse
-	var errMsg string
 	resp, err := c.Client.R().
 		SetBody(textData).
-		SetResult(&dataResponse).
-		SetError(&errMsg).
 		SetHeader("Content-Type", "application/json").
 		SetHeader("Authorization", "Bearer "+c.Token).
 		Put(c.ServerHost + "/api/data/text/" + strconv.FormatInt(dataID, 10))
@@ -86,20 +83,22 @@ func (c *Client) UpdateTextData(textData model.AddTextData, dataID int64) (model
 		return dataResponse, err
 	}
 	if resp.StatusCode() != http.StatusOK {
-		return dataResponse, errors.New(errMsg)
+		return dataResponse, errors.New(string(resp.Body()))
+	}
+	if err = json.Unmarshal(resp.Body(), &dataResponse); err != nil {
+		return dataResponse, err
 	}
 	return dataResponse, nil
 }
 
 // Добавление бинарных данных пользователем.
-func (c *Client) AddBinaryData(formData *bytes.Buffer) (model.DataResponse, error) {
+func (c *Client) AddBinaryData(filepath string, name string) (model.DataResponse, error) {
 	var dataResponse model.DataResponse
-	var errMsg string
 	resp, err := c.Client.R().
-		SetBody(formData).
-		SetResult(&dataResponse).
-		SetError(&errMsg).
-		SetHeader("Content-Type", "multipart/form-data").
+		SetFile("file", filepath).
+		SetFormData(map[string]string{
+			"name": name,
+		}).
 		SetHeader("Authorization", "Bearer "+c.Token).
 		Post(c.ServerHost + "/api/data/binary")
 
@@ -107,20 +106,22 @@ func (c *Client) AddBinaryData(formData *bytes.Buffer) (model.DataResponse, erro
 		return dataResponse, err
 	}
 	if resp.StatusCode() != http.StatusOK {
-		return dataResponse, errors.New(errMsg)
+		return dataResponse, errors.New(string(resp.Body()))
+	}
+	if err = json.Unmarshal(resp.Body(), &dataResponse); err != nil {
+		return dataResponse, err
 	}
 	return dataResponse, nil
 }
 
 // Обновление бинарных данных пользователем.
-func (c *Client) UpdateBinaryData(formData *bytes.Buffer, dataID int64) (model.DataResponse, error) {
+func (c *Client) UpdateBinaryData(filepath string, name string, dataID int64) (model.DataResponse, error) {
 	var dataResponse model.DataResponse
-	var errMsg string
 	resp, err := c.Client.R().
-		SetBody(formData).
-		SetResult(&dataResponse).
-		SetError(&errMsg).
-		SetHeader("Content-Type", "multipart/form-data").
+		SetFile("file", filepath).
+		SetFormData(map[string]string{
+			"name": name,
+		}).
 		SetHeader("Authorization", "Bearer "+c.Token).
 		Put(c.ServerHost + "/api/data/binary/" + strconv.FormatInt(dataID, 10))
 
@@ -128,7 +129,10 @@ func (c *Client) UpdateBinaryData(formData *bytes.Buffer, dataID int64) (model.D
 		return dataResponse, err
 	}
 	if resp.StatusCode() != http.StatusOK {
-		return dataResponse, errors.New(errMsg)
+		return dataResponse, errors.New(string(resp.Body()))
+	}
+	if err = json.Unmarshal(resp.Body(), &dataResponse); err != nil {
+		return dataResponse, err
 	}
 	return dataResponse, nil
 }
@@ -136,10 +140,7 @@ func (c *Client) UpdateBinaryData(formData *bytes.Buffer, dataID int64) (model.D
 // Удаление данных пользователя по ID.
 func (c *Client) DeleteData(dataID int64) (model.DataResponse, error) {
 	var dataResponse model.DataResponse
-	var errMsg string
 	resp, err := c.Client.R().
-		SetResult(&dataResponse).
-		SetError(&errMsg).
 		SetHeader("Content-Type", "application/json").
 		SetHeader("Authorization", "Bearer "+c.Token).
 		Delete(c.ServerHost + "/api/data/" + strconv.FormatInt(dataID, 10))
@@ -148,7 +149,10 @@ func (c *Client) DeleteData(dataID int64) (model.DataResponse, error) {
 		return dataResponse, err
 	}
 	if resp.StatusCode() != http.StatusOK {
-		return dataResponse, errors.New(errMsg)
+		return dataResponse, errors.New(string(resp.Body()))
+	}
+	if err = json.Unmarshal(resp.Body(), &dataResponse); err != nil {
+		return dataResponse, err
 	}
 	return dataResponse, nil
 }

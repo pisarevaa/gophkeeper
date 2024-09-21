@@ -1,8 +1,6 @@
 package request
 
 import (
-	"bytes"
-
 	"github.com/pisarevaa/gophkeeper/internal/shared/model"
 )
 
@@ -14,7 +12,7 @@ type Requester interface {
 	GetDataByID(dataID int64) (dataResponse model.DataResponse, err error)
 	AddTextData(textData model.AddTextData) (dataResponse model.DataResponse, err error)
 	UpdateTextData(textData model.AddTextData, dataID int64) (dataResponse model.DataResponse, err error)
-	AddBinaryData(formData *bytes.Buffer) (dataResponse model.DataResponse, err error)
-	UpdateBinaryData(formData *bytes.Buffer, dataID int64) (dataResponse model.DataResponse, err error)
+	AddBinaryData(filepath string, name string) (dataResponse model.DataResponse, err error)
+	UpdateBinaryData(filepath string, name string, dataID int64) (dataResponse model.DataResponse, err error)
 	DeleteData(dataID int64) (dataResponse model.DataResponse, err error)
 }

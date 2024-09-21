@@ -170,7 +170,7 @@ func AddBinaryDataCommand() *cli.Command {
 		},
 		Action: func(cCtx *cli.Context) error {
 			name := cCtx.String("name")
-			filepath := cCtx.String("name")
+			filepath := cCtx.String("filepath")
 			config := config.NewConfig()
 			service := service.NewService(
 				service.WithClient(request.NewClient(config.ServerHost)),
@@ -213,7 +213,7 @@ func UpdateBinaryData() *cli.Command {
 		Action: func(cCtx *cli.Context) error {
 			dataID := cCtx.Int64("data-id")
 			name := cCtx.String("name")
-			filepath := cCtx.String("name")
+			filepath := cCtx.String("filepath")
 			config := config.NewConfig()
 			service := service.NewService(
 				service.WithClient(request.NewClient(config.ServerHost)),
