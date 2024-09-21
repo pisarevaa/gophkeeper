@@ -15,4 +15,5 @@ type Requester interface {
 	AddBinaryData(filepath string, name string) (dataResponse model.DataResponse, err error)
 	UpdateBinaryData(filepath string, name string, dataID int64) (dataResponse model.DataResponse, err error)
 	DeleteData(dataID int64) (dataResponse model.DataResponse, err error)
+	DownloadFile(url string, filename string) (err error)
 }

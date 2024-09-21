@@ -44,6 +44,12 @@ func (s *Service) GetDataByID(dataID int64) error {
 		}
 		dataResponse.Data = decryptedData
 	}
+	if dataResponse.Type == model.BinaryType {
+		errDowload := s.Client.DownloadFile(dataResponse.Data, dataResponse.FileName)
+		if errDowload != nil {
+			return errDowload
+		}
+	}
 	rowString, err := json.Marshal(dataResponse)
 	if err != nil {
 		return err

@@ -44,8 +44,9 @@ type DataResponseShort struct {
 type DataResponse struct {
 	ID        int64        `json:"id"`
 	Name      string       `json:"name"`
-	Data      string       `json:"data"`
+	Data      string       `json:"data,omitempty"`
 	FileName  string       `json:"filename,omitempty"`
+	ObjectID  string       `json:"object_id,omitempty"`
 	Type      DataTypeEnum `json:"type"`
 	CreatedAt DateTime     `json:"createdAt"`
 	UpdatedAt DateTime     `json:"updatedAt"`

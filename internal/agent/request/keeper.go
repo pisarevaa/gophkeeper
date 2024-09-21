@@ -156,3 +156,18 @@ func (c *Client) DeleteData(dataID int64) (model.DataResponse, error) {
 	}
 	return dataResponse, nil
 }
+
+// Получение файла и запись на диск.
+func (c *Client) DownloadFile(url string, filename string) error {
+	resp, err := c.Client.R().
+		SetOutput(filename).
+		Get(url)
+
+	if err != nil {
+		return err
+	}
+	if resp.StatusCode() != http.StatusOK {
+		return errors.New(string(resp.Body()))
+	}
+	return nil
+}

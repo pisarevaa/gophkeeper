@@ -559,10 +559,16 @@ const docTemplate = `{
                 "data": {
                     "type": "string"
                 },
+                "filename": {
+                    "type": "string"
+                },
                 "id": {
                     "type": "integer"
                 },
                 "name": {
+                    "type": "string"
+                },
+                "object_id": {
                     "type": "string"
                 },
                 "type": {
