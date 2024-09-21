@@ -10,6 +10,7 @@ type Keeper struct {
 	Name      string
 	Data      string
 	ObjectID  string
+	FileName  string
 	Type      DataTypeEnum
 	UserID    int64
 	CreatedAt time.Time
@@ -27,9 +28,11 @@ type AddBinarytData struct {
 }
 
 type AddKeeper struct {
-	Name string
-	Data string
-	Type DataTypeEnum
+	Name     string
+	Data     string
+	ObjectID string
+	FileName string
+	Type     DataTypeEnum
 }
 
 type DataResponseShort struct {
@@ -42,6 +45,7 @@ type DataResponse struct {
 	ID        int64        `json:"id"`
 	Name      string       `json:"name"`
 	Data      string       `json:"data"`
+	FileName  string       `json:"filename,omitempty"`
 	Type      DataTypeEnum `json:"type"`
 	CreatedAt DateTime     `json:"createdAt"`
 	UpdatedAt DateTime     `json:"updatedAt"`

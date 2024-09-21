@@ -13,25 +13,6 @@ func (s *KeeperService) GetData(ctx context.Context, userID int64) ([]model.Keep
 	if err != nil {
 		return data, http.StatusInternalServerError, err
 	}
-	var binaryObjectIDs []string
-	for _, keeper := range data {
-		if keeper.Type == model.BinaryType {
-			binaryObjectIDs = append(binaryObjectIDs, keeper.Data)
-		}
-	}
-	if len(binaryObjectIDs) > 0 {
-		urls, errMinio := s.Minio.GetMany(ctx, s.Config.Minio.Bucket, binaryObjectIDs)
-		if errMinio != nil {
-			return data, http.StatusInternalServerError, errMinio
-		}
-		index := 0
-		for i, keeper := range data {
-			if keeper.Type == model.BinaryType {
-				data[i].Data = urls[index]
-				index++
-			}
-		}
-	}
 	return data, 0, nil
 }
 
@@ -45,11 +26,10 @@ func (s *KeeperService) GetDataByID(ctx context.Context, userID int64, dataID in
 		return data, http.StatusUnauthorized, err
 	}
 	if data.Type == model.BinaryType {
-		url, errMinio := s.Minio.GetOne(ctx, s.Config.Minio.Bucket, data.Data)
+		url, errMinio := s.Minio.GetOne(ctx, s.Config.Minio.Bucket, data.ObjectID)
 		if errMinio != nil {
 			return data, http.StatusNotFound, errMinio
 		}
-		data.ObjectID = data.Data
 		data.Data = url
 	}
 	return data, 0, nil
@@ -86,9 +66,10 @@ func (s *KeeperService) AddBinaryData(
 		return model.Keeper{}, http.StatusInternalServerError, err
 	}
 	keeper := model.AddKeeper{
-		Name: name,
-		Data: objectID,
-		Type: model.BinaryType,
+		Name:     name,
+		ObjectID: objectID,
+		FileName: file.FileName,
+		Type:     model.BinaryType,
 	}
 	data, err := s.Storage.AddData(ctx, keeper, userID)
 	if err != nil {
@@ -142,9 +123,10 @@ func (s *KeeperService) UpdateBinaryData(
 		return model.Keeper{}, http.StatusInternalServerError, err
 	}
 	keeper := model.AddKeeper{
-		Name: name,
-		Data: objectID,
-		Type: model.BinaryType,
+		Name:     name,
+		ObjectID: objectID,
+		FileName: file.FileName,
+		Type:     model.BinaryType,
 	}
 	data, err := s.Storage.UpdateData(ctx, keeper, dataID)
 	if err != nil {

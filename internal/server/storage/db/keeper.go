@@ -43,9 +43,9 @@ func (dbpool *DB) GetDataByID(ctx context.Context, dataID int64) (model.Keeper, 
 	var dataType string
 	err := dbpool.QueryRow(
 		ctx,
-		"SELECT id, name, data, type, user_id, created_at, updated_at FROM keeper WHERE id = $1",
+		"SELECT id, name, data, object_id, filename, type, user_id, created_at, updated_at FROM keeper WHERE id = $1",
 		dataID,
-	).Scan(&d.ID, &d.Name, &d.Data, &dataType, &d.UserID, &d.CreatedAt, &d.UpdatedAt)
+	).Scan(&d.ID, &d.Name, &d.Data, &d.ObjectID, &d.FileName, &dataType, &d.UserID, &d.CreatedAt, &d.UpdatedAt)
 	if err != nil {
 		return d, err
 	}
@@ -62,12 +62,14 @@ func (dbpool *DB) AddData(ctx context.Context, keeper model.AddKeeper, userID in
 	var dataType string
 	err := dbpool.QueryRow(
 		ctx,
-		"INSERT INTO keeper (name, data, type, user_id) VALUES ($1, $2, $3, $4) RETURNING id, name, data, type, user_id, created_at, updated_at",
+		"INSERT INTO keeper (name, data, object_id, filename, type, user_id) VALUES ($1, $2, $3, $4, $5, $6) RETURNING id, name, data, object_id, filename, type, user_id, created_at, updated_at",
 		keeper.Name,
 		keeper.Data,
+		keeper.ObjectID,
+		keeper.FileName,
 		keeper.Type.String(),
 		userID,
-	).Scan(&d.ID, &d.Name, &d.Data, &dataType, &d.UserID, &d.CreatedAt, &d.UpdatedAt)
+	).Scan(&d.ID, &d.Name, &d.Data, &d.ObjectID, &d.FileName, &dataType, &d.UserID, &d.CreatedAt, &d.UpdatedAt)
 	if err != nil {
 		return d, err
 	}
@@ -84,12 +86,14 @@ func (dbpool *DB) UpdateData(ctx context.Context, keeper model.AddKeeper, dataID
 	var dataType string
 	err := dbpool.QueryRow(
 		ctx,
-		"UPDATE keeper SET name = $1, data = $2, type = $3 WHERE id = $4 RETURNING id, name, data, type, user_id, created_at, updated_at",
+		"UPDATE keeper SET name = $1, data = $2, object_id = $3, filename = $4, type = $5 WHERE id = $6 RETURNING id, name, data, object_id, filename, type, user_id, created_at, updated_at",
 		keeper.Name,
 		keeper.Data,
+		keeper.ObjectID,
+		keeper.FileName,
 		keeper.Type.String(),
 		dataID,
-	).Scan(&d.ID, &d.Name, &d.Data, &dataType, &d.UserID, &d.CreatedAt, &d.UpdatedAt)
+	).Scan(&d.ID, &d.Name, &d.Data, &d.ObjectID, &d.FileName, &dataType, &d.UserID, &d.CreatedAt, &d.UpdatedAt)
 	if err != nil {
 		return d, err
 	}
@@ -106,9 +110,9 @@ func (dbpool *DB) DeleteData(ctx context.Context, dataID int64) (model.Keeper, e
 	var dataType string
 	err := dbpool.QueryRow(
 		ctx,
-		"DELETE FROM keeper WHERE id = $1 RETURNING id, name, data, type, user_id, created_at, updated_at",
+		"DELETE FROM keeper WHERE id = $1 RETURNING id, name, data, object_id, filename, type, user_id, created_at, updated_at",
 		dataID,
-	).Scan(&d.ID, &d.Name, &d.Data, &dataType, &d.UserID, &d.CreatedAt, &d.UpdatedAt)
+	).Scan(&d.ID, &d.Name, &d.Data, &d.ObjectID, &d.FileName, &dataType, &d.UserID, &d.CreatedAt, &d.UpdatedAt)
 	if err != nil {
 		return d, err
 	}

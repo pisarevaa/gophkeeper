@@ -4,6 +4,7 @@ import (
 	"encoding/json"
 	"log/slog"
 
+	"github.com/pisarevaa/gophkeeper/internal/agent/utils"
 	"github.com/pisarevaa/gophkeeper/internal/shared/model"
 )
 
@@ -36,6 +37,13 @@ func (s *Service) GetDataByID(dataID int64) error {
 	if err != nil {
 		return err
 	}
+	if dataResponse.Type == model.TextType {
+		decryptedData, errDecrypt := utils.DecryptString(s.Config.PrivateKey, dataResponse.Data)
+		if errDecrypt != nil {
+			return errDecrypt
+		}
+		dataResponse.Data = decryptedData
+	}
 	rowString, err := json.Marshal(dataResponse)
 	if err != nil {
 		return err
@@ -50,6 +58,11 @@ func (s *Service) AddTextData(textData model.AddTextData) error {
 	if err := s.Client.SetToken(); err != nil {
 		return err
 	}
+	encryptedData, err := utils.EncryptString(s.Config.PublicKey, []byte(textData.Data))
+	if err != nil {
+		return err
+	}
+	textData.Data = encryptedData
 	dataResponse, err := s.Client.AddTextData(textData)
 	if err != nil {
 		return err
@@ -68,6 +81,11 @@ func (s *Service) UpdateTextData(textData model.AddTextData, dataID int64) error
 	if err := s.Client.SetToken(); err != nil {
 		return err
 	}
+	encryptedData, err := utils.EncryptString(s.Config.PublicKey, []byte(textData.Data))
+	if err != nil {
+		return err
+	}
+	textData.Data = encryptedData
 	dataResponse, err := s.Client.UpdateTextData(textData, dataID)
 	if err != nil {
 		return err

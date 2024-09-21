@@ -4,6 +4,7 @@ import (
 	"crypto/rand"
 	"crypto/rsa"
 	"crypto/x509"
+	"encoding/hex"
 	"encoding/pem"
 	"errors"
 	"os"
@@ -29,7 +30,7 @@ func InitPublicKey(filePath string) (*rsa.PublicKey, error) {
 	return publicKey, nil
 }
 
-func EncryptString(publicKey *rsa.PublicKey, plaintext []byte) ([]byte, error) {
+func EncryptString(publicKey *rsa.PublicKey, plaintext []byte) (string, error) {
 	msgLen := len(plaintext)
 	// Не понял пока как подобрать число чтобы не было ошибки crypto/rsa: message too long for RSA key size.
 	step := publicKey.Size() - 15 //nolint:mnd // не понял пока как подобрать число
@@ -42,12 +43,12 @@ func EncryptString(publicKey *rsa.PublicKey, plaintext []byte) ([]byte, error) {
 		}
 		encryptedBlockBytes, err := rsa.EncryptPKCS1v15(rand.Reader, publicKey, plaintext[start:finish])
 		if err != nil {
-			return nil, err
+			return "", err
 		}
 
 		encryptedBytes = append(encryptedBytes, encryptedBlockBytes...)
 	}
-	return encryptedBytes, nil
+	return hex.EncodeToString(encryptedBytes), nil
 }
 
 func InitPrivateKey(filePath string) (*rsa.PrivateKey, error) {
@@ -63,8 +64,12 @@ func InitPrivateKey(filePath string) (*rsa.PrivateKey, error) {
 	return privateKey, nil
 }
 
-func DecryptString(privateKey *rsa.PrivateKey, ciphertext []byte) ([]byte, error) {
-	msgLen := len(ciphertext)
+func DecryptString(privateKey *rsa.PrivateKey, ciphertext string) (string, error) {
+	ciphertextBytes, err := hex.DecodeString(ciphertext)
+	if err != nil {
+		return "", err
+	}
+	msgLen := len(ciphertextBytes)
 	var decryptedBytes []byte
 	step := privateKey.PublicKey.Size()
 
@@ -73,12 +78,11 @@ func DecryptString(privateKey *rsa.PrivateKey, ciphertext []byte) ([]byte, error
 		if finish > msgLen {
 			finish = msgLen
 		}
-		decryptedBlockBytes, err := rsa.DecryptPKCS1v15(rand.Reader, privateKey, ciphertext[start:finish])
-		if err != nil {
-			// panic(err)
-			return nil, err
+		decryptedBlockBytes, errDecrypt := rsa.DecryptPKCS1v15(rand.Reader, privateKey, ciphertextBytes[start:finish])
+		if errDecrypt != nil {
+			return "", errDecrypt
 		}
 		decryptedBytes = append(decryptedBytes, decryptedBlockBytes...)
 	}
-	return decryptedBytes, nil
+	return string(decryptedBytes), nil
 }

@@ -8,9 +8,11 @@ CREATE UNIQUE INDEX ix_users_email ON users USING btree (email);
 
 CREATE TABLE IF NOT EXISTS keeper (
     "id" 		    BIGSERIAL PRIMARY KEY,
-	"data" 		    TEXT NOT NULL,
+	"data" 		    TEXT NULL,
 	"name" 			VARCHAR(250) NOT NULL,
 	"type" 		    VARCHAR(20) NOT NULL,
+	"object_id"     TEXT NULL,
+	"filename"      TEXT NULL,
 	"user_id"		INTEGER NOT NULL,
 	"created_at" 	TIMESTAMPTZ NOT NULL DEFAULT NOW(),
 	"updated_at" 	TIMESTAMPTZ NOT NULL DEFAULT NOW()

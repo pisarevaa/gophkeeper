@@ -43,11 +43,6 @@ func (suite *ServerTestSuite) TestGetData() {
 				},
 			}, nil)
 
-	mockMinio.EXPECT().
-		GetMany(gomock.Any(), gomock.Any(), gomock.Any()).
-		Return(
-			[]string{"url"}, nil)
-
 	keeperService := keeper.NewService(
 		keeper.WithConfig(suite.config),
 		keeper.WithStorage(mockDB),

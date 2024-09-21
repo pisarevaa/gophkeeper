@@ -14,6 +14,8 @@ import (
 	"github.com/pisarevaa/gophkeeper/internal/shared/model"
 )
 
+const linkExpiedAt = time.Second * 60
+
 // Загрузка объекта Minio.
 func (m *Minio) CreateOne(ctx context.Context, bucket string, file model.UploadedFile) (string, error) {
 	objectID := uuid.New().String()
@@ -34,7 +36,6 @@ func (m *Minio) CreateOne(ctx context.Context, bucket string, file model.Uploade
 
 // Получение ссылки на объект Minio.
 func (m *Minio) GetOne(ctx context.Context, bucket string, objectID string) (string, error) {
-	linkExpiedAt := time.Second * 24 * 60 * 60 //nolint:mnd // it's okey
 	url, err := m.PresignedGetObject(ctx, bucket, objectID, linkExpiedAt, nil)
 	if err != nil {
 		return "", fmt.Errorf("ошибка при получении URL для объекта %v: %w", objectID, err)
