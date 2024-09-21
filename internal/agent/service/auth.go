@@ -40,7 +40,7 @@ func (s *Service) LoginUser(user model.RegisterUser) error {
 	}
 	switch status {
 	case http.StatusOK:
-		if errSave := utils.SaveToDisk(tokenResponse); errSave != nil {
+		if errSave := utils.SaveUserDataToDisk(tokenResponse); errSave != nil {
 			return err
 		}
 		return nil

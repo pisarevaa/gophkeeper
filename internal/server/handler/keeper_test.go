@@ -1,12 +1,7 @@
 package handler_test
 
 import (
-	"bytes"
-	"io"
-	"mime/multipart"
 	"net/http/httptest"
-	"os"
-	"strings"
 	"time"
 
 	"github.com/golang/mock/gomock"
@@ -28,7 +23,7 @@ func (suite *ServerTestSuite) TestGetData() {
 		GetDataByUserID(gomock.Any(), gomock.Any()).
 		Return(
 			[]model.Keeper{
-				model.Keeper{
+				{
 					ID:        1,
 					Name:      "text",
 					Data:      "some data",
@@ -37,7 +32,7 @@ func (suite *ServerTestSuite) TestGetData() {
 					CreatedAt: time.Now(),
 					UpdatedAt: time.Now(),
 				},
-				model.Keeper{
+				{
 					ID:        2,
 					Name:      "Binary",
 					Data:      "url",
@@ -219,42 +214,6 @@ func (suite *ServerTestSuite) TestAddTextData() {
 	suite.Require().Equal(result.Data, "some data")
 }
 
-func getFormData() (*bytes.Buffer, string, error) {
-	reader, err := os.Open("fixtures/test_image.webp")
-	if err != nil {
-		return nil, "", err
-	}
-	values := map[string]io.Reader{
-		"file": reader,
-		"name": strings.NewReader("binary"),
-	}
-
-	var b bytes.Buffer
-	w := multipart.NewWriter(&b)
-	for key, r := range values {
-		var fw io.Writer
-		if x, ok := r.(io.Closer); ok {
-			defer x.Close()
-		}
-		if x, ok := r.(*os.File); ok {
-			if fw, err = w.CreateFormFile(key, x.Name()); err != nil {
-				return nil, "", err
-			}
-		} else {
-			// Add other fields
-			if fw, err = w.CreateFormField(key); err != nil {
-				return nil, "", err
-			}
-		}
-		if _, err = io.Copy(fw, r); err != nil {
-			return nil, "", err
-		}
-	}
-	w.Close()
-	contentType := w.FormDataContentType()
-	return &b, contentType, nil
-}
-
 func (suite *ServerTestSuite) TestAddBinaryData() {
 	ctrl := gomock.NewController(suite.T())
 	defer ctrl.Finish()
@@ -293,14 +252,13 @@ func (suite *ServerTestSuite) TestAddBinaryData() {
 	defer ts.Close()
 
 	var result model.DataResponse
-
-	buf, contentType, err := getFormData()
+	buf, err := sharedUtils.CreateFormData("fixtures/test_image.webp", "binary")
 	suite.Require().NoError(err)
 
 	resp, err := suite.client.R().
 		SetBody(buf).
 		SetResult(&result).
-		SetHeader("Content-Type", contentType).
+		SetHeader("Content-Type", "multipart/form-data").
 		SetHeader("Authorization", "Bearer "+suite.token).
 		Post(ts.URL + "/api/data/binary")
 	suite.Require().NoError(err)
@@ -427,13 +385,13 @@ func (suite *ServerTestSuite) TestUpdateBinaryData() {
 
 	var result model.DataResponse
 
-	buf, contentType, err := getFormData()
+	buf, err := sharedUtils.CreateFormData("fixtures/test_image.webp", "binary")
 	suite.Require().NoError(err)
 
 	resp, err := suite.client.R().
 		SetBody(buf).
 		SetResult(&result).
-		SetHeader("Content-Type", contentType).
+		SetHeader("Content-Type", "multipart/form-data").
 		SetHeader("Authorization", "Bearer "+suite.token).
 		Put(ts.URL + "/api/data/binary/1")
 	suite.Require().NoError(err)

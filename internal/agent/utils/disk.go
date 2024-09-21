@@ -7,11 +7,11 @@ import (
 	"github.com/pisarevaa/gophkeeper/internal/shared/model"
 )
 
-const filename = "gophkeeper_auth.json"
+const userFilename = "gophkeeper_auth.json"
 
 // Сохранение данных пользователя на диск.
-func SaveToDisk(tokenResponse model.TokenResponse) error {
-	file, err := os.OpenFile(filename, os.O_RDWR|os.O_CREATE|os.O_TRUNC, 0666)
+func SaveUserDataToDisk(tokenResponse model.TokenResponse) error {
+	file, err := os.OpenFile(userFilename, os.O_RDWR|os.O_CREATE|os.O_TRUNC, 0666)
 	if err != nil {
 		return err
 	}
@@ -28,8 +28,8 @@ func SaveToDisk(tokenResponse model.TokenResponse) error {
 }
 
 // Получение данных пользователя с диска.
-func LoadFromDosk() (model.TokenResponse, error) {
-	file, err := os.OpenFile(filename, os.O_RDONLY|os.O_CREATE, 0666)
+func LoadUserDataFromDosk() (model.TokenResponse, error) {
+	file, err := os.OpenFile(userFilename, os.O_RDONLY|os.O_CREATE, 0666)
 	if err != nil {
 		return model.TokenResponse{}, err
 	}

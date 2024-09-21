@@ -11,6 +11,7 @@ const timeoutSec = 30
 type Client struct {
 	Client     *resty.Client
 	ServerHost string
+	Token      string
 }
 
 // Создание клиента для запросов.

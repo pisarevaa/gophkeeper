@@ -16,6 +16,7 @@ func main() {
 		Description: "Gophkeeper helps to keep your data safely",
 		Commands: []*cli.Command{
 			command.RegisterCommand(),
+			command.LoginCommand(),
 		},
 	}
 
