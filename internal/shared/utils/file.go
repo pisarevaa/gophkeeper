@@ -2,7 +2,6 @@ package utils
 
 import (
 	"bytes"
-	"fmt"
 	"io"
 	"mime/multipart"
 	"os"
@@ -10,7 +9,6 @@ import (
 )
 
 func CreateFormData(filepath string, name string) (*bytes.Buffer, error) {
-	fmt.Println("filepath", filepath)
 	reader, err := os.Open(filepath)
 	if err != nil {
 		return nil, err

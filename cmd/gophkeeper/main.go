@@ -12,6 +12,7 @@ import (
 func main() {
 	app := &cli.App{
 		Name:        "gophkeeper",
+		Version:     "1.0",
 		Usage:       "Keep your data safely",
 		Description: "Gophkeeper helps to keep your data safely",
 		Commands: []*cli.Command{

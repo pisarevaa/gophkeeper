@@ -1,15 +1,9 @@
 package command
 
 import (
-	"log/slog"
-
 	"github.com/urfave/cli/v2"
 
-	"github.com/pisarevaa/gophkeeper/internal/agent/config"
-	"github.com/pisarevaa/gophkeeper/internal/agent/request"
-	"github.com/pisarevaa/gophkeeper/internal/agent/service"
 	"github.com/pisarevaa/gophkeeper/internal/shared/model"
-	sharedUtils "github.com/pisarevaa/gophkeeper/internal/shared/utils"
 )
 
 // Получение всех данных пользователя.
@@ -19,15 +13,13 @@ func GetDataCommand() *cli.Command {
 		Usage: "get all user's data",
 		Args:  false,
 		Action: func(_ *cli.Context) error {
-			config := config.NewConfig()
-			service := service.NewService(
-				service.WithClient(request.NewClient(config.ServerHost)),
-				service.WithValidator(sharedUtils.NewValidator()),
-				service.WithConfig(config),
-			)
-			err := service.GetData()
+			service, err := NewCommand()
 			if err != nil {
-				slog.Error("Error: " + err.Error())
+				return err
+			}
+			err = service.GetData()
+			if err != nil {
+				return err
 			}
 			return nil
 		},
@@ -50,15 +42,13 @@ func GetDataByIDCommand() *cli.Command {
 		},
 		Action: func(cCtx *cli.Context) error {
 			dataID := cCtx.Int64("data-id")
-			config := config.NewConfig()
-			service := service.NewService(
-				service.WithClient(request.NewClient(config.ServerHost)),
-				service.WithValidator(sharedUtils.NewValidator()),
-				service.WithConfig(config),
-			)
-			err := service.GetDataByID(dataID)
+			service, err := NewCommand()
 			if err != nil {
-				slog.Error("Error: " + err.Error())
+				return err
+			}
+			err = service.GetDataByID(dataID)
+			if err != nil {
+				return err
 			}
 			return nil
 		},
@@ -89,15 +79,13 @@ func AddTextDataCommand() *cli.Command {
 				Name: cCtx.String("name"),
 				Data: cCtx.String("data"),
 			}
-			config := config.NewConfig()
-			service := service.NewService(
-				service.WithClient(request.NewClient(config.ServerHost)),
-				service.WithValidator(sharedUtils.NewValidator()),
-				service.WithConfig(config),
-			)
-			err := service.AddTextData(textData)
+			service, err := NewCommand()
 			if err != nil {
-				slog.Error("Error: " + err.Error())
+				return err
+			}
+			err = service.AddTextData(textData)
+			if err != nil {
+				return err
 			}
 			return nil
 		},
@@ -134,15 +122,13 @@ func UpdateTextDataCommand() *cli.Command {
 				Name: cCtx.String("name"),
 				Data: cCtx.String("data"),
 			}
-			config := config.NewConfig()
-			service := service.NewService(
-				service.WithClient(request.NewClient(config.ServerHost)),
-				service.WithValidator(sharedUtils.NewValidator()),
-				service.WithConfig(config),
-			)
-			err := service.UpdateTextData(textData, dataID)
+			service, err := NewCommand()
 			if err != nil {
-				slog.Error("Error: " + err.Error())
+				return err
+			}
+			err = service.UpdateTextData(textData, dataID)
+			if err != nil {
+				return err
 			}
 			return nil
 		},
@@ -171,15 +157,13 @@ func AddBinaryDataCommand() *cli.Command {
 		Action: func(cCtx *cli.Context) error {
 			name := cCtx.String("name")
 			filepath := cCtx.String("filepath")
-			config := config.NewConfig()
-			service := service.NewService(
-				service.WithClient(request.NewClient(config.ServerHost)),
-				service.WithValidator(sharedUtils.NewValidator()),
-				service.WithConfig(config),
-			)
-			err := service.AddBinaryData(filepath, name)
+			service, err := NewCommand()
 			if err != nil {
-				slog.Error("Error: " + err.Error())
+				return err
+			}
+			err = service.AddBinaryData(filepath, name)
+			if err != nil {
+				return err
 			}
 			return nil
 		},
@@ -214,15 +198,13 @@ func UpdateBinaryData() *cli.Command {
 			dataID := cCtx.Int64("data-id")
 			name := cCtx.String("name")
 			filepath := cCtx.String("filepath")
-			config := config.NewConfig()
-			service := service.NewService(
-				service.WithClient(request.NewClient(config.ServerHost)),
-				service.WithValidator(sharedUtils.NewValidator()),
-				service.WithConfig(config),
-			)
-			err := service.UpdateBinaryData(filepath, name, dataID)
+			service, err := NewCommand()
 			if err != nil {
-				slog.Error("Error: " + err.Error())
+				return err
+			}
+			err = service.UpdateBinaryData(filepath, name, dataID)
+			if err != nil {
+				return err
 			}
 			return nil
 		},
@@ -245,15 +227,13 @@ func DeleteDataCommand() *cli.Command {
 		},
 		Action: func(cCtx *cli.Context) error {
 			dataID := cCtx.Int64("data-id")
-			config := config.NewConfig()
-			service := service.NewService(
-				service.WithClient(request.NewClient(config.ServerHost)),
-				service.WithValidator(sharedUtils.NewValidator()),
-				service.WithConfig(config),
-			)
-			err := service.DeleteData(dataID)
+			service, err := NewCommand()
 			if err != nil {
-				slog.Error("Error: " + err.Error())
+				return err
+			}
+			err = service.DeleteData(dataID)
+			if err != nil {
+				return err
 			}
 			return nil
 		},

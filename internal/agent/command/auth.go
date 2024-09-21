@@ -5,14 +5,10 @@ import (
 
 	"github.com/urfave/cli/v2"
 
-	"github.com/pisarevaa/gophkeeper/internal/agent/config"
-	"github.com/pisarevaa/gophkeeper/internal/agent/request"
-	"github.com/pisarevaa/gophkeeper/internal/agent/service"
 	"github.com/pisarevaa/gophkeeper/internal/shared/model"
-	sharedUtils "github.com/pisarevaa/gophkeeper/internal/shared/utils"
 )
 
-func RegisterCommand() *cli.Command { //nolint:dupl // it's ok
+func RegisterCommand() *cli.Command {
 	command := cli.Command{
 		Name:  "register",
 		Usage: "register an account",
@@ -34,25 +30,22 @@ func RegisterCommand() *cli.Command { //nolint:dupl // it's ok
 				Email:    cCtx.String("email"),
 				Password: cCtx.String("password"),
 			}
-			config := config.NewConfig()
-			service := service.NewService(
-				service.WithClient(request.NewClient(config.ServerHost)),
-				service.WithValidator(sharedUtils.NewValidator()),
-				service.WithConfig(config),
-			)
-			err := service.RegisterUser(user)
-			if err == nil {
-				slog.Info("You are successfully registered into Gophkeeper")
-			} else {
-				slog.Error("Error: " + err.Error())
+			service, err := NewCommand()
+			if err != nil {
+				return err
 			}
+			err = service.RegisterUser(user)
+			if err != nil {
+				return err
+			}
+			slog.Info("You are successfully registered into Gophkeeper")
 			return nil
 		},
 	}
 	return &command
 }
 
-func LoginCommand() *cli.Command { //nolint:dupl // it's ok
+func LoginCommand() *cli.Command {
 	command := cli.Command{
 		Name:  "login",
 		Usage: "login into account",
@@ -74,18 +67,15 @@ func LoginCommand() *cli.Command { //nolint:dupl // it's ok
 				Email:    cCtx.String("email"),
 				Password: cCtx.String("password"),
 			}
-			config := config.NewConfig()
-			service := service.NewService(
-				service.WithClient(request.NewClient(config.ServerHost)),
-				service.WithValidator(sharedUtils.NewValidator()),
-				service.WithConfig(config),
-			)
-			err := service.LoginUser(user)
-			if err == nil {
-				slog.Info("You are successfully login into Gophkeeper")
-			} else {
-				slog.Error("Error: " + err.Error())
+			service, err := NewCommand()
+			if err != nil {
+				return err
 			}
+			err = service.LoginUser(user)
+			if err != nil {
+				return err
+			}
+			slog.Info("You are successfully login into Gophkeeper")
 			return nil
 		},
 	}

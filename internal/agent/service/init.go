@@ -9,7 +9,7 @@ import (
 type Service struct {
 	Client    request.Requester
 	Validator *validator.Validate
-	Config    config.Config
+	Config    *config.Config
 }
 
 type Option func(*Service)
@@ -26,7 +26,7 @@ func WithValidator(validator *validator.Validate) Option {
 	}
 }
 
-func WithConfig(config config.Config) Option {
+func WithConfig(config *config.Config) Option {
 	return func(s *Service) {
 		s.Config = config
 	}
