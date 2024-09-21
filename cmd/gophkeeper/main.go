@@ -17,6 +17,13 @@ func main() {
 		Commands: []*cli.Command{
 			command.RegisterCommand(),
 			command.LoginCommand(),
+			command.GetDataCommand(),
+			command.GetDataByIDCommand(),
+			command.AddTextDataCommand(),
+			command.UpdateTextDataCommand(),
+			command.AddBinaryDataCommand(),
+			command.UpdateBinaryData(),
+			command.DeleteDataCommand(),
 		},
 	}
 

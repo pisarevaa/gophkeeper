@@ -14,6 +14,7 @@ import (
 // Кодирование ответа в JSON.
 func JSON(w http.ResponseWriter, status int, model any) {
 	w.Header().Set("Content-Type", "application/json")
+	w.WriteHeader(status)
 	bytes, err := json.Marshal(model)
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
@@ -21,13 +22,14 @@ func JSON(w http.ResponseWriter, status int, model any) {
 	}
 	if status != http.StatusOK {
 		slog.Error(string(bytes))
+		http.Error(w, string(bytes), status)
+		return
 	}
 	_, err = w.Write(bytes)
 	if err != nil {
 		http.Error(w, err.Error(), status)
 		return
 	}
-	w.WriteHeader(status)
 }
 
 // Установка куки авторизации с токеном.

@@ -1,6 +1,7 @@
 package request
 
 import (
+	"encoding/json"
 	"bytes"
 	"errors"
 	"net/http"
@@ -12,19 +13,19 @@ import (
 // Получение всех данных пользователя.
 func (c *Client) GetData() ([]model.DataResponse, error) {
 	var dataResponse []model.DataResponse
-	var errMsg string
 	resp, err := c.Client.R().
 		SetResult(&dataResponse).
-		SetError(&errMsg).
 		SetHeader("Content-Type", "application/json").
 		SetHeader("Authorization", "Bearer "+c.Token).
 		Get(c.ServerHost + "/api/data")
-
 	if err != nil {
 		return dataResponse, err
 	}
 	if resp.StatusCode() != http.StatusOK {
-		return dataResponse, errors.New(errMsg)
+		return dataResponse, errors.New(string(resp.Body()))
+	}
+	if err = json.Unmarshal(resp.Body(), &dataResponse); err != nil {
+		return dataResponse, err
 	}
 	return dataResponse, nil
 }

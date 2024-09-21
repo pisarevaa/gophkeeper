@@ -7,7 +7,7 @@ type Config struct {
 // Инициализация переменных окружения.
 func NewConfig() Config {
 	config := Config{
-		ServerHost: "localhost:8080",
+		ServerHost: "http://127.0.0.1:8080",
 	}
 	return config
 }

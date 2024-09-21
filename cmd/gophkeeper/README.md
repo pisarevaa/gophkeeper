@@ -1,3 +1,3 @@
 # cmd/gophkeeper
 
-Агент GophKeeper
+CLI агент GophKeeper

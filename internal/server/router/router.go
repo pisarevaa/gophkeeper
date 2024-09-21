@@ -4,6 +4,7 @@ import (
 	"net/http"
 
 	"github.com/go-chi/chi/v5"
+	"github.com/go-chi/chi/v5/middleware"
 	"github.com/go-chi/cors"
 
 	docs "github.com/pisarevaa/gophkeeper/docs"
@@ -19,7 +20,7 @@ func NewRouter(handlers *handler.Handler) chi.Router {
 	// Инициализация роутера
 	r := chi.NewRouter()
 	// Логирование запросов
-	r.Use(handlers.HTTPLoggingMiddleware)
+	r.Use(middleware.Logger)
 	// Настройка корсов
 	r.Use(cors.Handler(cors.Options{
 		AllowedOrigins:   []string{"*"},

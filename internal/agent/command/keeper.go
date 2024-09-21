@@ -39,7 +39,7 @@ func GetDataCommand() *cli.Command {
 func GetDataByIDCommand() *cli.Command {
 	command := cli.Command{
 		Name:  "get_data_by_id",
-		Usage: "get all user's data",
+		Usage: "get user's data by ID",
 		Args:  true,
 		Flags: []cli.Flag{
 			&cli.Int64Flag{
